@@ -123,7 +123,7 @@ public class Controller {
     }
     @FXML
     private void actionClear() {
-        textDisplay.setText("");
+        textDisplay.setText("0");
         n1 = 0;
         n2 = 0;
         result = 0;
@@ -140,7 +140,9 @@ public class Controller {
             textDisplay.setText("");
             equalsPressed = false;
         }
-
+        if (textDisplay.getText() == "0") {
+            textDisplay.setText("");
+        }
         textDisplay.setText(textDisplay.getText() + "1");
     }
     @FXML
@@ -151,6 +153,9 @@ public class Controller {
         if (equalsPressed) {
             textDisplay.setText("");
             equalsPressed = false;
+        }
+        if (textDisplay.getText() == "0") {
+            textDisplay.setText("");
         }
         textDisplay.setText(textDisplay.getText() + "2");
     }
@@ -163,6 +168,9 @@ public class Controller {
             textDisplay.setText("");
             equalsPressed = false;
         }
+        if (textDisplay.getText() == "0") {
+            textDisplay.setText("");
+        }
         textDisplay.setText(textDisplay.getText() + "3");
     }
     @FXML
@@ -173,6 +181,9 @@ public class Controller {
         if (equalsPressed) {
             textDisplay.setText("");
             equalsPressed = false;
+        }
+        if (textDisplay.getText() == "0") {
+            textDisplay.setText("");
         }
         textDisplay.setText(textDisplay.getText() + "4");
     }
@@ -185,6 +196,9 @@ public class Controller {
             textDisplay.setText("");
             equalsPressed = false;
         }
+        if (textDisplay.getText() == "0") {
+            textDisplay.setText("");
+        }
         textDisplay.setText(textDisplay.getText() + "5");
     }
     @FXML
@@ -195,6 +209,9 @@ public class Controller {
         if (equalsPressed) {
             textDisplay.setText("");
             equalsPressed = false;
+        }
+        if (textDisplay.getText() == "0") {
+            textDisplay.setText("");
         }
         textDisplay.setText(textDisplay.getText() + "6");
     }
@@ -207,6 +224,9 @@ public class Controller {
             textDisplay.setText("");
             equalsPressed = false;
         }
+        if (textDisplay.getText() == "0") {
+            textDisplay.setText("");
+        }
         textDisplay.setText(textDisplay.getText() + "7");
     }
     @FXML
@@ -217,6 +237,9 @@ public class Controller {
         if (equalsPressed) {
             textDisplay.setText("");
             equalsPressed = false;
+        }
+        if (textDisplay.getText() == "0") {
+            textDisplay.setText("");
         }
         textDisplay.setText(textDisplay.getText() + "8");
     }
@@ -229,6 +252,9 @@ public class Controller {
             textDisplay.setText("");
             equalsPressed = false;
         }
+        if (textDisplay.getText() == "0") {
+            textDisplay.setText("");
+        }
         textDisplay.setText(textDisplay.getText() + "9");
     }
     @FXML
@@ -239,6 +265,9 @@ public class Controller {
         if (equalsPressed) {
             textDisplay.setText("");
             equalsPressed = false;
+        }
+        if (textDisplay.getText() == "0") {
+            textDisplay.setText("");
         }
         textDisplay.setText(textDisplay.getText() + "0");
     }
