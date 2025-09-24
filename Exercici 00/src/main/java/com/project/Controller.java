@@ -1,32 +1,13 @@
 package com.project;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.text.Text;
-import javafx.event.ActionEvent;
 
 public class Controller {
 
     @FXML
-    private Button buttonAdd;
-    private Button buttonSubtract;
-    private Button buttonMultiply;
-    private Button buttonDivide;
-    private Button buttonEquals;
-    private Button buttonClear;
-    private Button button1;
-    private Button button2;
-    private Button button3;
-    private Button button4;
-    private Button button5;
-    private Button button6;
-    private Button button7;
-    private Button button8;
-    private Button button9;
-    private Button button0;
-
-    @FXML
     private Text textDisplay;
+
     private int n1 = 0;
     private int n2 = 0;
     private int result = 0;
@@ -40,6 +21,12 @@ public class Controller {
             return;
         }
         if (textDisplay.getText() != "") {
+            if (operation != "") {
+                actionEquals();
+                if (divideByZeroError) {
+                    return;
+                }
+            }
             n1 = Integer.parseInt(textDisplay.getText());
             textDisplay.setText("");
         }
@@ -51,6 +38,12 @@ public class Controller {
             return;
         }
         if (textDisplay.getText() != "") {
+            if (operation != "") {
+                actionEquals();
+                if (divideByZeroError) {
+                    return;
+                }
+            }
             n1 = Integer.parseInt(textDisplay.getText());
             textDisplay.setText("");
         }
@@ -62,6 +55,12 @@ public class Controller {
             return;
         }
         if (textDisplay.getText() != "") {
+            if (operation != "") {
+                actionEquals();
+                if (divideByZeroError) {
+                    return;
+                }
+            }
             n1 = Integer.parseInt(textDisplay.getText());
             textDisplay.setText("");
         }
@@ -73,6 +72,12 @@ public class Controller {
             return;
         }
         if (textDisplay.getText() != "") {
+            if (operation != "") {
+                actionEquals();
+                if (divideByZeroError) {
+                    return;
+                }
+            }
             n1 = Integer.parseInt(textDisplay.getText());
             textDisplay.setText("");
         }
