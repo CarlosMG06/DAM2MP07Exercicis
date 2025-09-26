@@ -19,7 +19,6 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws Exception {
 
-        UtilsViews.parentContainer.setStyle("-fx-font: 14 arial;");
         UtilsViews.addView(getClass(), "ViewForm", "/assets/Form.fxml");
         UtilsViews.addView(getClass(), "ViewHello", "/assets/Hello.fxml");
 
