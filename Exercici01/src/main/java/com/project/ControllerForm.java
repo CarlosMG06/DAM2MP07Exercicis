@@ -33,7 +33,7 @@ public class ControllerForm {
         Main.edat = fieldAge.getText();
         UtilsViews.setView("ViewHello");
 
-        ControllerHello ctrlHello = (ControllerHello) UtilsViews.getController("ViewHello");
+        ControllerDesktop ctrlHello = (ControllerDesktop) UtilsViews.getController("ViewHello");
         ctrlHello.setLabelText();
     }
 }
