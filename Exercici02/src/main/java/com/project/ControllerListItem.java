@@ -11,20 +11,13 @@ import javafx.scene.image.ImageView;
 public class ControllerListItem {
 
     @FXML
-    private Label title, subtitle;
+    private Label title;
 
     @FXML
     private ImageView img;
 
-    @FXML
-    private Circle circle;
-
     public void setTitle(String title) {
         this.title.setText(title);
-    }
-
-    public void setSubtitle(String subtitle) {
-        this.subtitle.setText(subtitle);
     }
 
     public void setImatge(String imagePath) {
@@ -35,9 +28,5 @@ public class ControllerListItem {
             System.err.println("Error loading image asset: " + imagePath);
             e.printStackTrace();
         }
-    }
-
-    public void setCircleColor(String color) {
-        circle.setStyle("-fx-fill: " + color);
     }
 }

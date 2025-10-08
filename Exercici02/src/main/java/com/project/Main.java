@@ -9,8 +9,9 @@ public class Main extends Application {
 
     public static String nom = "";
     public static String edat = "";
-    final int WIDOW_WIDTH = 400;
-    final int WINDOW_HEIGHT = 300;
+    final int MIN_WINDOW_WIDTH = 200;
+    final int WINDOW_WIDTH = 715;
+    final int WINDOW_HEIGHT = 540;
 
     public static void main(String[] args) {
         launch(args);
@@ -25,9 +26,12 @@ public class Main extends Application {
         Scene scene = new Scene(UtilsViews.parentContainer);
 
         stage.setScene(scene);
-        stage.setTitle("Exercici 01 - Vistes");
-        stage.setMinWidth(WIDOW_WIDTH);
+        stage.setTitle("Exercici 02 - Nntendo DB");
+        stage.setMinWidth(MIN_WINDOW_WIDTH);
         stage.setMinHeight(WINDOW_HEIGHT);
+        stage.setMaxWidth(WINDOW_WIDTH);
+        stage.setMaxHeight(WINDOW_HEIGHT);
+        stage.setResizable(true);
         stage.show();
 
         // Add icon only if not Mac
