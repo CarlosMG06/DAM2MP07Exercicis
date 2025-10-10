@@ -9,8 +9,8 @@ import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 
-import javafx.scene.control.ChoiceBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.layout.HBox;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
@@ -25,15 +25,26 @@ import org.json.JSONObject;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 
-public class ControllerDesktop implements Initializable {
+import javafx.animation.TranslateTransition;
+import javafx.util.Duration;
+
+public class ControllerMobile implements Initializable {
 
     @FXML
-    private ChoiceBox<String> choiceBox;
+    private VBox panelCategories, panelList, panelDetails;
+    @FXML
+    private HBox titleCategories, titleList, titleDetails;
+    @FXML
+    private Text titleListText, titleDetailsText;
+
+    @FXML
+    private HBox btnJocs, btnConsoles, btnPersonatges;
+    @FXML
+    private HBox btnBackList, btnBackDetails;
+
     @FXML
     private VBox itemsList;
 
-    @FXML
-    private VBox panelDetails;
     @FXML
     private ImageView itemImage;
     @FXML
@@ -47,9 +58,11 @@ public class ControllerDesktop implements Initializable {
 
     private JSONArray jsonGames, jsonConsoles, jsonCharacters;
 
+    private String currentCategory = "Jocs";
+
     @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        itemDescription.wrappingWidthProperty().bind(panelDetails.widthProperty().subtract(40));
+    public void initialize(URL url, ResourceBundle rb) {    
+    itemDescription.wrappingWidthProperty().bind(Main.windowWidthProperty.subtract(20));
 
         try {
             URL jsonFileURL = getClass().getResource("/data/games.json");
@@ -70,14 +83,59 @@ public class ControllerDesktop implements Initializable {
             e.printStackTrace();
         }
 
-        choiceBox.getItems().addAll(categories);
-        choiceBox.setValue(categories[0]);
-        choiceBox.setOnAction((event) -> {
-            loadItems(choiceBox.getValue());
-        });
-        loadItems(categories[0]);
+        btnJocs.setOnMouseClicked(e -> showListPanel("Jocs"));
+        btnConsoles.setOnMouseClicked(e -> showListPanel("Consoles"));
+        btnPersonatges.setOnMouseClicked(e -> showListPanel("Personatges"));
+
+        btnBackList.setOnMouseClicked(e -> showCategoriesPanel());
+        btnBackDetails.setOnMouseClicked(e -> showListPanel(currentCategory));
+
+        panelCategories.setVisible(true);
+        panelList.setVisible(false);
+        panelDetails.setVisible(false);
     }
 
+    private void showCategoriesPanel() {
+        animatePanel(panelList, false);
+        animatePanel(panelDetails, false);
+        animatePanel(panelCategories, true);
+    }
+
+    private void showListPanel(String category) {
+        currentCategory = category;
+        titleListText.setText(category);
+        loadItems(category);
+        animatePanel(panelCategories, false);
+        animatePanel(panelDetails, false);
+        animatePanel(panelList, true);
+    }
+
+    private void showDetailsPanel(JSONObject item, String name, String imagePath, String color, String category) {
+        showDetails(item, name, imagePath, color, category);
+        titleDetailsText.setText(name);
+        animatePanel(panelList, false);
+        animatePanel(panelCategories, false);
+        animatePanel(panelDetails, true);
+    }
+
+    private void animatePanel(VBox panel, boolean show) {
+        if (show) {
+            panel.setVisible(true);
+            TranslateTransition tt = new TranslateTransition(Duration.millis(180), panel);
+            tt.setFromX(300);
+            tt.setToX(0);
+            tt.setOnFinished(ev -> panel.setTranslateX(0));
+            tt.play();
+        } else {
+            TranslateTransition tt = new TranslateTransition(Duration.millis(180), panel);
+            tt.setFromX(0);
+            tt.setToX(300);
+            tt.setOnFinished(ev -> panel.setVisible(false));
+            tt.play();
+        }
+    }
+
+    // Similar al de ControllerDesktop
     private void loadItems(String category) {
         JSONArray items = null;
         switch (category) {
@@ -94,9 +152,6 @@ public class ControllerDesktop implements Initializable {
 
         // Limpiar la lista anterior
         itemsList.getChildren().clear();
-        
-        // Guardar referència a l'element seleccionat (per ressaltar-lo)
-        final Parent[] selectedTemplate = {null};
 
         for (int i = 0; i < items.length(); i++) {
             JSONObject item = items.getJSONObject(i);
@@ -114,32 +169,19 @@ public class ControllerDesktop implements Initializable {
                 itemController.setImatge(imagePath);
                 itemsList.getChildren().add(itemTemplate);
 
-                // Mostrar detalls del primer element per defecte
-                if (i == 0) {
-                    showDetails(item, name, imagePath, color, category);
-                    itemTemplate.setStyle("-fx-background-color: #e0e0e0;");
-                    selectedTemplate[0] = itemTemplate;
-                }
-
-                // Event click per mostrar detalls i ressaltar
-                itemTemplate.setOnMouseClicked(event -> {
-                    showDetails(item, name, imagePath, color, category);
-                    // Treure fons al anterior seleccionat
-                    if (selectedTemplate[0] != null)
-                        selectedTemplate[0].setStyle("");
-                    // Posar fons al seleccionat
-                    itemTemplate.setStyle("-fx-background-color: #e0e0e0;");
-                    selectedTemplate[0] = itemTemplate;
-                });
+                itemTemplate.setOnMouseClicked(e -> showDetailsPanel(item, name, imagePath, color, category));
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-
-        
     }
 
-    // Mètode per mostrar els detalls de l'element seleccionat
+    // private HashMap getDetails(JSONObject item) {
+    //     HashMap<String, String> details;
+    //     details.put("name", item.getString("name"));
+    // }
+
+    // Igual que en ControllerDesktop
     private void showDetails(JSONObject item, String name, String imagePath, String color, String category) {
         // Imatge
         try {

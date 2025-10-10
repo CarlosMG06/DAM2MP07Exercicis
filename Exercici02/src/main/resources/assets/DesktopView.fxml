@@ -31,9 +31,9 @@
                   <Insets />
                </VBox.margin>
             </ChoiceBox>
-            <ScrollPane fitToWidth="true" hbarPolicy="NEVER" prefHeight="400.0" prefWidth="200.0" vbarPolicy="AS_NEEDED" VBox.vgrow="ALWAYS">
+            <ScrollPane fitToWidth="true" hbarPolicy="NEVER" prefHeight="400.0" prefWidth="200.0" vbarPolicy="NEVER" VBox.vgrow="ALWAYS">
                <content>
-                  <VBox fx:id="choiceListContainer" prefWidth="200.0" />
+                  <VBox fx:id="itemsList" prefWidth="200.0" />
                </content>
                <VBox.margin>
                   <Insets top="10.0" />
@@ -46,16 +46,16 @@
       </VBox>
    </left>
    <center>
-        <VBox fx:id="detailsPanel" alignment="TOP_CENTER">
+        <VBox fx:id="panelDetails" alignment="TOP_CENTER">
             <children>
-                <ImageView fx:id="itemImage" fitHeight="240.0" fitWidth="300.0" pickOnBounds="true" preserveRatio="true">
+                <ImageView fx:id="itemImage" fitHeight="200.0" fitWidth="250.0" pickOnBounds="true" preserveRatio="true">
                     <VBox.margin>
                     <Insets bottom="10.0" top="10.0" />
                     </VBox.margin>
                 </ImageView>
-                <Text fx:id="itemTitle" strokeType="OUTSIDE" strokeWidth="0.0" text="Text">
+                <Text fx:id="itemName" strokeType="OUTSIDE" strokeWidth="0.0" text="Text">
                     <font>
-                    <Font size="24.0" />
+                    <Font size="25.0" />
                     </font>
                 </Text>
                 <Rectangle fx:id="itemColor" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="15.0" stroke="BLACK" strokeType="INSIDE" width="15.0">
@@ -65,7 +65,7 @@
                 </Rectangle>
                 <Text fx:id="itemDescription" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" textAlignment="CENTER">
                     <font>
-                    <Font size="13.0" />
+                    <Font size="15.0" />
                     </font>
                <VBox.margin>
                   <Insets />
