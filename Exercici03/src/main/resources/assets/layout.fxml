@@ -12,23 +12,23 @@
 
 <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <ScrollPane fx:id="scrollPane" hbarPolicy="NEVER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="320.0" prefWidth="572.0">
+      <ScrollPane fx:id="scrollPane" hbarPolicy="NEVER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="320.0" prefWidth="570.0">
          <content>
-            <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" />
+            <VBox fx:id="chatHistory" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" />
          </content>
       </ScrollPane>
-      <Text fx:id="textInfo" strokeType="OUTSIDE" strokeWidth="0.0" text="Text">
+      <Text fx:id="textInfo" fill="#333333" strokeType="OUTSIDE" strokeWidth="0.0" text="..." textAlignment="CENTER">
          <VBox.margin>
             <Insets bottom="6.0" top="6.0" />
          </VBox.margin>
       </Text>
       <HBox alignment="CENTER" prefWidth="200.0">
          <children>
-            <Button fx:id="btnAttachFile" mnemonicParsing="false" onAction="#actionAttachFile" prefWidth="36.0">
+            <Button fx:id="btnAddPicture" mnemonicParsing="false" onAction="#actionAddPicture" prefHeight="28.0" prefWidth="35.0">
                <graphic>
-                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@images/attach_file_transparent.png" />
+                        <Image url="@images/picture_transparent.png" />
                      </image>
                   </ImageView>
                </graphic>
@@ -38,11 +38,11 @@
                   <Insets left="10.0" right="10.0" />
                </HBox.margin>
             </TextField>
-            <Button fx:id="btnSend" mnemonicParsing="false" onAction="#actionSend">
+            <Button fx:id="btnSend" mnemonicParsing="false" onAction="#actionSend" prefHeight="28.0" prefWidth="35.0">
                <graphic>
-                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@images/send__transparent.png" />
+                        <Image url="@images/send_2_transparent.png" />
                      </image>
                   </ImageView>
                </graphic>
