@@ -2,12 +2,18 @@ package com.project;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.event.ActionEvent;
 import javafx.application.Platform;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.Initializable;
+
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -18,6 +24,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.InputStream;
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Base64;
 import java.util.concurrent.CompletableFuture;
@@ -36,8 +43,10 @@ public class Controller implements Initializable {
     private static final String TEXT_MODEL   = "gemma3:1b";
     private static final String VISION_MODEL = "llava-phi3";
 
-    @FXML private Button buttonCallStream, buttonCallComplete, buttonBreak, buttonPicture;
-    @FXML private Text textInfo;
+    @FXML private Button btnAddPicture, btnSend, btnBreak;
+    @FXML private TextField chatInput;
+    @FXML private Text infoLog;
+    @FXML private VBox chatHistory;
 
     private final HttpClient httpClient = HttpClient.newHttpClient();
     private CompletableFuture<HttpResponse<InputStream>> streamRequest;
@@ -48,52 +57,19 @@ public class Controller implements Initializable {
     private Future<?> streamReadingTask;
     private volatile boolean isFirst = false;
 
+    private File selectedImageFile = null;
+    private ControllerMessage lastAIMsgController = null;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         setButtonsIdle();
     }
 
-    // --- UI actions ---
-
     @FXML
-    private void callStream(ActionEvent event) {
-        textInfo.setText("");
-        setButtonsRunning();
-        isCancelled.set(false);
-
-        ensureModelLoaded(TEXT_MODEL).whenComplete((v, err) -> {
-            if (err != null) {
-                Platform.runLater(() -> { textInfo.setText("Error loading model."); setButtonsIdle(); });
-                return;
-            }
-            executeTextRequest(TEXT_MODEL, "Why is the sky blue?", true);
-        });
-    }
-
-    @FXML
-    private void callComplete(ActionEvent event) {
-        textInfo.setText("");
-        setButtonsRunning();
-        isCancelled.set(false);
-
-        ensureModelLoaded(TEXT_MODEL).whenComplete((v, err) -> {
-            if (err != null) {
-                Platform.runLater(() -> { textInfo.setText("Error loading model."); setButtonsIdle(); });
-                return;
-            }
-            executeTextRequest(TEXT_MODEL, "Tell me a haiku.", false);
-        });
-    }
-
-    @FXML
-    private void callPicture(ActionEvent event) {
-        textInfo.setText("");
-        setButtonsRunning();
-        isCancelled.set(false);
-
+    private void actionAddPicture(ActionEvent event) {
         // Choose image file
         FileChooser fc = new FileChooser();
-        fc.setTitle("Choose an image");
+        fc.setTitle("Select an image");
         fc.getExtensionFilters().addAll(
             new FileChooser.ExtensionFilter("Images", "*.png", "*.jpg", "*.jpeg", "*.webp", "*.bmp", "*.gif")
         );
@@ -104,30 +80,90 @@ public class Controller implements Initializable {
             fc.setInitialDirectory(initialDir);
         }
 
-        File file = fc.showOpenDialog(buttonPicture.getScene().getWindow());
-        if (file == null) {
-            Platform.runLater(() -> { textInfo.setText("No file selected."); setButtonsIdle(); });
-            return;
+        File file = fc.showOpenDialog(btnAddPicture.getScene().getWindow());
+        if (file != null) {
+            selectedImageFile = file;
+            infoLog.setText("Selected image: " + file.getName());
+        } else {
+            infoLog.setText("No image selected.");
         }
+    }
+    @FXML
+    private void actionSend(ActionEvent event) {
+        String prompt = chatInput.getText();
+        if (prompt == null || prompt.isBlank()) return;
+        addMessageToHistory(prompt, false);
+        chatInput.setText("");
+        if (selectedImageFile != null) {
+            callPicture(event, prompt);
+        } else {
+            callStream(event, prompt);
+        }
+    }
 
+    private void addMessageToHistory(String message, boolean isAI) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/assets/chatMessage.fxml"));
+            Parent msgTemplate = loader.load();
+            ControllerMessage msgController = loader.getController();
+
+            if (isAI) {
+                msgController.setProfilePicture("/assets/images/ieti.png");
+                msgController.setUsername("Xat IETI");
+                lastAIMsgController = msgController;
+            } else {
+                msgController.setProfilePicture("/assets/images/you.png");
+                msgController.setUsername("You");
+                if (selectedImageFile != null) {
+                    msgController.addPicture(selectedImageFile.getAbsolutePath());
+                }
+            }
+            msgController.setTextMessage(message);
+
+            chatHistory.getChildren().add(msgTemplate);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // --- UI actions ---
+
+    private void callStream(ActionEvent event, String prompt) {
+        infoLog.setText("");
+        setButtonsRunning();
+        isCancelled.set(false);
+
+        ensureModelLoaded(TEXT_MODEL).whenComplete((v, err) -> {
+            if (err != null) {
+                Platform.runLater(() -> { infoLog.setText("Error loading model."); setButtonsIdle(); });
+                return;
+            }
+            executeTextRequest(TEXT_MODEL, prompt);
+        });
+    }
+
+    private void callPicture(ActionEvent event, String prompt) {
+        infoLog.setText("");
+        setButtonsRunning();
+        isCancelled.set(false);
 
         // Read file -> base64
         final String base64Image;
         try {
-            byte[] bytes = Files.readAllBytes(file.toPath());
+            byte[] bytes = Files.readAllBytes(selectedImageFile.toPath());
             base64Image = Base64.getEncoder().encodeToString(bytes);
         } catch (Exception e) {
             e.printStackTrace();
-            Platform.runLater(() -> { textInfo.setText("Error reading image."); setButtonsIdle(); });
+            Platform.runLater(() -> { infoLog.setText("Error reading image."); setButtonsIdle(); });
             return;
         }
 
         ensureModelLoaded(VISION_MODEL).whenComplete((v, err) -> {
             if (err != null) {
-                Platform.runLater(() -> { textInfo.setText("Error loading model."); setButtonsIdle(); });
+                Platform.runLater(() -> { infoLog.setText("Error loading model."); setButtonsIdle(); });
                 return;
             }
-            executeImageRequest(VISION_MODEL, "Describe what's in this picture", base64Image);
+            executeImageRequest(VISION_MODEL, prompt, base64Image);
         });
     }
 
@@ -135,21 +171,20 @@ public class Controller implements Initializable {
     private void callBreak(ActionEvent event) {
         isCancelled.set(true);
         cancelStreamRequest();
-        cancelCompleteRequest();
         Platform.runLater(() -> {
-            textInfo.setText("Request cancelled.");
+            infoLog.setText("Request cancelled.");
             setButtonsIdle();
         });
     }
 
     // --- Request helpers ---
 
-    // Text-only (stream or not)
-    private void executeTextRequest(String model, String prompt, boolean stream) {
+    // Text-only (stream)
+    private void executeTextRequest(String model, String prompt) {
         JSONObject body = new JSONObject()
             .put("model", model)
             .put("prompt", prompt)
-            .put("stream", stream)
+            .put("stream", true)
             .put("keep_alive", "10m");
 
         HttpRequest request = HttpRequest.newBuilder()
@@ -158,42 +193,26 @@ public class Controller implements Initializable {
             .POST(BodyPublishers.ofString(body.toString()))
             .build();
 
-        if (stream) {
-            Platform.runLater(() -> textInfo.setText("Wait stream ... " + prompt));
-            isFirst = true;
+        Platform.runLater(() -> infoLog.setText("Wait stream ... "));
+        isFirst = true;
 
-            streamRequest = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofInputStream())
-                .thenApply(response -> {
-                    currentInputStream = response.body();
-                    streamReadingTask = executorService.submit(this::handleStreamResponse);
-                    return response;
-                })
-                .exceptionally(e -> {
-                    if (!isCancelled.get()) e.printStackTrace();
-                    Platform.runLater(this::setButtonsIdle);
-                    return null;
-                });
-
-        } else {
-            Platform.runLater(() -> textInfo.setText("Wait complete ..."));
-
-            completeRequest = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
-                .thenApply(response -> {
-                    String responseText = safeExtractTextResponse(response.body());
-                    Platform.runLater(() -> { textInfo.setText(responseText); setButtonsIdle(); });
-                    return response;
-                })
-                .exceptionally(e -> {
-                    if (!isCancelled.get()) e.printStackTrace();
-                    Platform.runLater(this::setButtonsIdle);
-                    return null;
-                });
-        }
+        streamRequest = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofInputStream())
+            .thenApply(response -> {
+                currentInputStream = response.body();
+                streamReadingTask = executorService.submit(this::handleStreamResponse);
+                infoLog.setText("...");
+                return response;
+            })
+            .exceptionally(e -> {
+                if (!isCancelled.get()) e.printStackTrace();
+                Platform.runLater(this::setButtonsIdle);
+                return null;
+            });
     }
 
     // Image + prompt (non-stream) using vision model
     private void executeImageRequest(String model, String prompt, String base64Image) {
-        Platform.runLater(() -> textInfo.setText("Analyzing picture ..."));
+        Platform.runLater(() -> infoLog.setText("Thinking..."));
 
         JSONObject body = new JSONObject()
             .put("model", model)
@@ -223,12 +242,16 @@ public class Controller implements Initializable {
                 }
 
                 final String toShow = msg;
-                Platform.runLater(() -> { textInfo.setText(toShow); setButtonsIdle(); });
+                Platform.runLater(() -> {
+                    addMessageToHistory(toShow, true);
+                    infoLog.setText("...");
+                    setButtonsIdle(); 
+                });
                 return resp;
             })
             .exceptionally(e -> {
                 if (!isCancelled.get()) e.printStackTrace();
-                Platform.runLater(() -> { textInfo.setText("Request failed."); setButtonsIdle(); });
+                Platform.runLater(() -> { infoLog.setText("Request failed."); setButtonsIdle(); });
                 return null;
             });
     }
@@ -246,15 +269,18 @@ public class Controller implements Initializable {
                 if (chunk.isEmpty()) continue;
 
                 if (isFirst) {
-                    Platform.runLater(() -> textInfo.setText(chunk));
+                    Platform.runLater(() -> addMessageToHistory(chunk, true));
                     isFirst = false;
                 } else {
-                    Platform.runLater(() -> textInfo.setText(textInfo.getText() + chunk));
+                    Platform.runLater(() -> {
+                        String currentText = lastAIMsgController.getTextMessage();
+                        lastAIMsgController.setTextMessage(currentText + chunk);
+                    });
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Platform.runLater(() -> { textInfo.setText("Error during streaming."); setButtonsIdle(); });
+            Platform.runLater(() -> { infoLog.setText("Error during streaming."); setButtonsIdle(); });
         } finally {
             try { if (currentInputStream != null) currentInputStream.close(); } catch (Exception ignore) {}
             Platform.runLater(this::setButtonsIdle);
@@ -303,25 +329,16 @@ public class Controller implements Initializable {
         }
     }
 
-    private void cancelCompleteRequest() {
-        if (completeRequest != null && !completeRequest.isDone()) {
-            System.out.println("Cancelling CompleteRequest");
-            completeRequest.cancel(true);
-        }
-    }
-
     private void setButtonsRunning() {
-        buttonCallStream.setDisable(true);
-        buttonCallComplete.setDisable(true);
-        buttonPicture.setDisable(true);
-        buttonBreak.setDisable(false);
+        btnAddPicture.setDisable(true);
+        btnSend.setDisable(true);
+        btnBreak.setDisable(false);
     }
 
     private void setButtonsIdle() {
-        buttonCallStream.setDisable(false);
-        buttonCallComplete.setDisable(false);
-        buttonPicture.setDisable(false);
-        buttonBreak.setDisable(true);
+        btnAddPicture.setDisable(false);
+        btnSend.setDisable(false);
+        btnBreak.setDisable(true);
         streamRequest = null;
         completeRequest = null;
     }
@@ -351,7 +368,7 @@ public class Controller implements Initializable {
 
                 if (loaded) return CompletableFuture.completedFuture(null);
 
-                Platform.runLater(() -> textInfo.setText("Loading model ..."));
+                Platform.runLater(() -> infoLog.setText("Loading model ..."));
 
                 String preloadJson = new JSONObject()
                     .put("model", modelName)
