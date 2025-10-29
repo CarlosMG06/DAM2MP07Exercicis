@@ -35,30 +35,39 @@ public class Main extends Application {
     
     @Override
     public void start(Stage stage) throws Exception {
+        try {
+            final int windowWidth = 400;
+            final int windowHeight = 300;
 
-        final int windowWidth = 400;
-        final int windowHeight = 300;
+            UtilsViews.parentContainer.setStyle("-fx-font: 14 arial;");
+            UtilsViews.addView(getClass(), "ViewConfig", "/assets/viewConfig.fxml"); 
+            UtilsViews.addView(getClass(), "ViewSockets", "/assets/viewSockets.fxml");
+            UtilsViews.addView(getClass(), "ViewMatchmaking", "/assets/viewMatchmaking.fxml");
+            UtilsViews.addView(getClass(), "ViewCountdown", "/assets/viewCountdown.fxml");
+            UtilsViews.addView(getClass(), "ViewGame", "/assets/viewGame.fxml");
+            UtilsViews.addView(getClass(), "ViewResult", "/assets/viewResult.fxml");
 
-        UtilsViews.parentContainer.setStyle("-fx-font: 14 arial;");
-        UtilsViews.addView(getClass(), "ViewConfig", "/assets/viewConfig.fxml"); 
-        UtilsViews.addView(getClass(), "ViewSockets", "/assets/viewSockets.fxml");
+            UtilsViews.setView("ViewCountdown"); // Testing countdown directly
 
-        ctrlConfig = (CtrlConfig) UtilsViews.getController("ViewConfig");
-        ctrlSockets = (CtrlSockets) UtilsViews.getController("ViewSockets");
+            ctrlConfig = (CtrlConfig) UtilsViews.getController("ViewConfig");
+            ctrlSockets = (CtrlSockets) UtilsViews.getController("ViewSockets");
 
-        Scene scene = new Scene(UtilsViews.parentContainer);
-        
-        stage.setScene(scene);
-        stage.onCloseRequestProperty(); // Call close method when closing window
-        stage.setTitle("JavaFX - NodeJS");
-        stage.setMinWidth(windowWidth);
-        stage.setMinHeight(windowHeight);
-        stage.show();
+            Scene scene = new Scene(UtilsViews.parentContainer);
+            
+            stage.setScene(scene);
+            stage.onCloseRequestProperty(); // Call close method when closing window
+            stage.setTitle("JavaFX - NodeJS");
+            stage.setMinWidth(windowWidth);
+            stage.setMinHeight(windowHeight);
+            stage.show();
 
-        // Add icon only if not Mac
-        if (!System.getProperty("os.name").contains("Mac")) {
-            Image icon = new Image("file:/icons/icon.png");
-            stage.getIcons().add(icon);
+            // Add icon only if not Mac
+            if (!System.getProperty("os.name").contains("Mac")) {
+                Image icon = new Image("file:/icons/icon.png");
+                stage.getIcons().add(icon);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
