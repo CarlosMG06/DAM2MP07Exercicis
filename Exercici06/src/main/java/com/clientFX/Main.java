@@ -25,7 +25,7 @@ public class Main extends Application {
     public static String protocolWS = "ws";
 
     public static CtrlConfig ctrlConfig;
-    public static CtrlSockets ctrlSockets;
+    public static CtrlLobby ctrlLobby;
 
     public static void main(String[] args) {
 
@@ -41,16 +41,16 @@ public class Main extends Application {
 
             UtilsViews.parentContainer.setStyle("-fx-font: 14 arial;");
             UtilsViews.addView(getClass(), "ViewConfig", "/assets/viewConfig.fxml"); 
-            UtilsViews.addView(getClass(), "ViewSockets", "/assets/viewSockets.fxml");
-            UtilsViews.addView(getClass(), "ViewMatchmaking", "/assets/viewMatchmaking.fxml");
+            UtilsViews.addView(getClass(), "ViewLobby", "/assets/viewLobby.fxml");
+            UtilsViews.addView(getClass(), "ViewWaiting", "/assets/viewWaiting.fxml");
             UtilsViews.addView(getClass(), "ViewCountdown", "/assets/viewCountdown.fxml");
             UtilsViews.addView(getClass(), "ViewGame", "/assets/viewGame.fxml");
             UtilsViews.addView(getClass(), "ViewResult", "/assets/viewResult.fxml");
-
-            UtilsViews.setView("ViewCountdown"); // Testing countdown directly
+            
+            UtilsViews.setView("ViewConfig");
 
             ctrlConfig = (CtrlConfig) UtilsViews.getController("ViewConfig");
-            ctrlSockets = (CtrlSockets) UtilsViews.getController("ViewSockets");
+            ctrlLobby = (CtrlLobby) UtilsViews.getController("ViewLobby");
 
             Scene scene = new Scene(UtilsViews.parentContainer);
             
@@ -115,11 +115,11 @@ public class Main extends Application {
     private static void wsMessage(String response) {
         Platform.runLater(()->{ 
             // Fer aquí els canvis a la interficie
-            if (UtilsViews.getActiveView() != "ViewSockets") {
-                UtilsViews.setViewAnimating("ViewSockets");
+            if (UtilsViews.getActiveView() != "ViewLobby") {
+                UtilsViews.setViewAnimating("ViewLobby");
             }
             JSONObject msgObj = new JSONObject(response);
-            ctrlSockets.receiveMessage(msgObj);
+            ctrlLobby.receiveMessage(msgObj);
         });
     }
 

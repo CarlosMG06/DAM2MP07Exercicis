@@ -16,7 +16,10 @@ public class CtrlCountdown implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        startCountdown();
+    }
+
+    public void onShow() {
+        startCountdown();  
     }
 
     private void startCountdown() {

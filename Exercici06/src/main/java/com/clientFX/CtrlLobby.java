@@ -7,12 +7,15 @@ import java.util.ResourceBundle;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 
 public class CtrlLobby implements Initializable {
 
@@ -20,34 +23,14 @@ public class CtrlLobby implements Initializable {
     private Label txtId;
 
     @FXML
-    private TextField txtField;
-
-    @FXML
     private TextArea txtArea;
 
     @FXML
-    private ChoiceBox<String> choiceType, choiceUser;
+    private ChoiceBox<String> choiceUser;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
-        // Start choiceBox
-        choiceType.getItems().clear();
-        choiceType.getItems().addAll("broadcast", "bounce", "private");
-        choiceType.setValue(choiceType.getItems().get(0));
-        choiceType.setOnAction((event) -> {
-            if (choiceType.getValue().equals("private")) {
-                choiceUser.setDisable(false);
-            } else {
-                choiceUser.setDisable(true);
-            }
-        });
-        choiceUser.setDisable(true);
-
-        // Send message when pressing enter
-        txtField.setOnAction((event) -> {
-            sendMessage();
-        });
+       choiceUser.getItems().clear();
     }
 
     @FXML
@@ -61,24 +44,14 @@ public class CtrlLobby implements Initializable {
     }
 
     @FXML
-    private void sendMessage () {
-        String txt = txtField.getText();
-
-        JSONObject obj = new JSONObject("{}");
-        String type = choiceType.getValue().toLowerCase();
-        obj.put("type", type);
-        obj.put("message", txt);
-
-        if (type.equals("private")) {
-            String destination = choiceUser.getValue();
-            if (destination == null) {
-                destination = "";
-            }
-            obj.put("destination", destination);
+    private void sendInvite() {
+        String dest = choiceUser.getValue();
+        if (dest != null && !dest.isBlank()) {
+            JSONObject messageObj = new JSONObject();
+            messageObj.put("type", "invite");
+            messageObj.put("destination", dest);
+            Main.wsClient.safeSend(messageObj.toString());
         }
-
-        Main.wsClient.safeSend(obj.toString());
-        System.out.println("Send WebSocket: " + obj.toString());
     }
 
     // Main wsClient calls this method when receiving a message
@@ -91,7 +64,7 @@ public class CtrlLobby implements Initializable {
             JSONArray JSONlist = messageObj.getJSONArray("list");
             ArrayList<String> list = new ArrayList<>();
             String id = messageObj.getString("id");
-        
+         
             for (int i = 0; i < JSONlist.length(); i++) {
                 String value = JSONlist.getString(i);
                 if (!value.equals(id)) { 
@@ -105,19 +78,41 @@ public class CtrlLobby implements Initializable {
                 choiceUser.getItems().addAll(list);
                 choiceUser.setValue(list.get(0));
             }
-        } else if (type.equals("bounce")) {
-            
-            txtArea.appendText("\n\nBounce: " + messageObj.getString("message"));
-
-        } else if (type.equals("broadcast")) {
-            
-            txtArea.appendText("\n\nBroadcast: " + messageObj.getString("message"));
-            txtArea.appendText("\n(from: " + messageObj.getString("origin") + ")");
-
-        } else if (type.equals("private")) {
-            
-            txtArea.appendText("\n\nPrivate: " + messageObj.getString("message"));
-            txtArea.appendText("\n(from: " + messageObj.getString("origin") + ")");
+        } else if (type.equals("invite")) {
+            String origin = messageObj.getString("origin");
+            Platform.runLater(() -> {
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Invitació de " + origin, ButtonType.YES, ButtonType.NO);
+                alert.setTitle("Invitació");
+                alert.setHeaderText("Acceptar invitació de " + origin + "?");
+                alert.showAndWait().ifPresent(response -> {
+                    JSONObject responseObj = new JSONObject();
+                    if (response == ButtonType.YES) {
+                        responseObj.put("type", "invite_accept");
+                    } else {
+                        responseObj.put("type", "invite_decline");
+                    }
+                    responseObj.put("destination", origin);
+                    Main.wsClient.safeSend(responseObj.toString());
+                });
+            });
+        } else if (type.equals("invite_accept")) {
+            Platform.runLater(() -> {
+                CtrlCountdown ctrlCountdown = (CtrlCountdown) UtilsViews.getController("ViewCountdown");
+                ctrlCountdown.onShow();
+                UtilsViews.setView("ViewCountdown");
+            });
+        } else if (type.equals("invite_decline")) {
+            String message = messageObj.optString("message", "L'usuari ha declinat la invitació.");
+            Platform.runLater(() -> {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION, message, ButtonType.OK);
+                alert.setTitle("Invitació rebutjada");
+                alert.setHeaderText(null);
+                alert.showAndWait();
+            });
         }
+    }
+
+    public void toWaitingView() {
+        UtilsViews.setView("Waiting");
     }
 }
