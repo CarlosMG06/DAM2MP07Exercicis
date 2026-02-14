@@ -58,28 +58,17 @@ public class Main extends WebSocketServer {
     private static final String T_PRIVATE = "private";
     private static final String T_INVITE = "invite";
     private static final String T_INVITE_CANCEL = "invite_cancel";
+    private static final String T_INVITE_CANCELLED = "invite_cancelled";
     private static final String T_INVITE_ACCEPT = "invite_accept";
-    private static final String T_INVITE_DECLINE = "invite_decline";  
+    private static final String T_INVITE_ACCEPTED = "invite_accepted";
+    private static final String T_INVITE_DECLINE = "invite_decline";
+    private static final String T_INVITE_DECLINED = "invite_declined";
     private static final String T_CLIENTS = "clients";
     private static final String T_ERROR = "error";
     private static final String T_CONFIRMATION = "confirmation";
 
     /** Registre de clients i assignació de noms (pool integrat). */
     private final ClientRegistry clients;
-
-    // Invitacions pendents
-    private final Map<String, PendingInvite> pendingInvites = new ConcurrentHashMap<>();
-
-    private static final long INVITE_TIMEOUT_SECONDS = 60;
-
-    private static class PendingInvite {
-        final String origin;
-        final String destination;
-        PendingInvite(String origin, String destination, ScheduledFuture<?> timeoutTask) {
-            this.origin = origin;
-            this.destination = destination;
-        }
-    }
 
     /**
      * Crea un servidor WebSocket que escolta a l'adreça indicada.
@@ -241,56 +230,45 @@ public class Main extends WebSocketServer {
                         .toString());
                 sendSafe(conn, msg(T_CONFIRMATION).put(K_MESSAGE, "Invitació enviada a " + destName).toString());
             }
-            // Cancel·lació d'invitació
-            case T_INVITE_CANCEL -> {
-                PendingInvite invite = pendingInvites.remove(origin);
-                if (invite != null) {
-                    WebSocket dest = clients.socketByName(invite.destination);  
-                    if (dest != null) {
-                        sendSafe(dest, msg(T_INVITE_CANCEL)
-                                .put(K_ORIGIN, origin)
-                                .put(K_MESSAGE, "L'invitador ha cancel·lat la invitació.")
-                                .toString());
-                    }
-                    sendSafe(conn, msg(T_CONFIRMATION).put(K_MESSAGE, "Invitació cancel·lada.").toString());
-                } else {
-                    sendSafe(conn, msg(T_ERROR).put(K_MESSAGE, "No hi ha cap invitació pendent per cancel·lar.").toString());
-                }
-            }
+            // // Cancel·lació d'invitació
+            // case T_INVITE_CANCEL -> {
+            //     String inviter = obj.optString(K_DESTINATION, "");
+            //     String invitee = origin;
+            //     WebSocket dest = clients.socketByName(invitee);  
+            //     if (dest != null) {
+            //         sendSafe(dest, msg(T_INVITE_CANCELLED)
+            //                 .put(K_ORIGIN, invitee)
+            //                 .put(K_MESSAGE, "L'invitador ha cancel·lat la invitació.")
+            //                 .toString());
+            //     }
+            //     sendSafe(conn, msg(T_CONFIRMATION).put(K_MESSAGE, "Invitació cancel·lada.").toString());
+            // }
             //
             case T_INVITE_ACCEPT -> {
-                String orig = obj.optString(K_ORIGIN, "");
-                PendingInvite invite = pendingInvites.remove(orig);
-                if (invite != null && invite.destination.equals(origin)) {
-                    WebSocket origSocket = clients.socketByName(invite.origin);
-                    WebSocket destSocket = clients.socketByName(invite.destination);
-                    JSONObject notify = msg(T_INVITE_ACCEPT)
-                            .put(K_ORIGIN, invite.origin)
-                            .put(K_DESTINATION, invite.destination);
-                    if (origSocket != null) sendSafe(origSocket, notify.toString());
-                    if (destSocket != null) sendSafe(destSocket, notify.toString());
-                } else {
-                    sendSafe(conn, msg(T_ERROR).put(K_MESSAGE, "No hi ha cap invitació pendent per aceptar.").toString());
-                }
+                String inviter = obj.optString(K_DESTINATION, "");
+                String invitee = origin;
+                WebSocket origSocket = clients.socketByName(inviter);
+                WebSocket destSocket = clients.socketByName(invitee);
+                JSONObject notify = msg(T_INVITE_ACCEPTED)
+                        .put(K_ORIGIN, inviter)
+                        .put(K_DESTINATION, invitee);
+                if (origSocket != null) sendSafe(origSocket, notify.toString());
+                if (destSocket != null) sendSafe(destSocket, notify.toString());
             }
             case T_INVITE_DECLINE -> {
-                String orig = obj.optString(K_ORIGIN, "");
-                PendingInvite invite = pendingInvites.remove(orig);
-                if (invite != null) {
-                    WebSocket origSocket = clients.socketByName(invite.origin);
-                    if (origSocket != null) {
-                        sendSafe(origSocket, msg(T_INVITE_DECLINE)
-                                .put(K_ORIGIN, invite.origin)
-                                .put(K_DESTINATION, invite.destination)
-                                .put(K_MESSAGE, "L'invitat ha rebutjat la invitació.")
-                                .toString());
-                    }
-                    WebSocket destSocket = clients.socketByName(invite.destination);
-                    if (destSocket != null) {
-                        sendSafe(destSocket, msg(T_CONFIRMATION).put(K_MESSAGE, "Invitació rebutjada.").toString());
-                    }
-                } else {
-                    sendSafe(conn, msg(T_ERROR).put(K_MESSAGE, "No hi ha cap invitació pendent per rebutjar.").toString());
+                String inviter = obj.optString(K_DESTINATION, "");
+                String invitee = origin;
+                WebSocket origSocket = clients.socketByName(inviter);
+                if (origSocket != null) {
+                    sendSafe(origSocket, msg(T_INVITE_DECLINED)
+                            .put(K_ORIGIN, inviter)
+                            .put(K_DESTINATION, invitee)
+                            .put(K_MESSAGE, "L'invitat ha rebutjat la invitació.")
+                            .toString());
+                }
+                WebSocket destSocket = clients.socketByName(invitee);
+                if (destSocket != null) {
+                    sendSafe(destSocket, msg(T_CONFIRMATION).put(K_MESSAGE, "Invitació rebutjada.").toString());
                 }
             }
             default -> {

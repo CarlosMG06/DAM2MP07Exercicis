@@ -14,24 +14,33 @@ import org.json.JSONObject;
 
 public class CtrlWaiting implements Initializable {
 
+    public String dest = "";
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
     }
 
     public void receiveMessage(JSONObject messageObj) {
         String type = messageObj.optString("type", "");
-        if (type.equals("invite_accept")) {
+        if (type.equals("invite_accepted")) {
             CtrlCountdown ctrlCountdown = (CtrlCountdown) UtilsViews.getController("ViewCountdown");
             ctrlCountdown.onShow();
             UtilsViews.setView("ViewCountdown");
-        } else if (type.equals("invite_decline") || type.equals("invite_cancelled")) {
-            String msg = messageObj.optString("message", "La invitación ha sido rechazada o cancelada.");
+        } else if (type.equals("invite_declined")) {
+            String message = messageObj.getString("message");
             Platform.runLater(() -> {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION, msg, ButtonType.OK);
+                Alert alert = new Alert(Alert.AlertType.INFORMATION, message, ButtonType.OK);
                 alert.setTitle("Invitació rebutjada");
                 alert.setHeaderText(null);
                 alert.showAndWait();
-                UtilsViews.setView("ViewLobby");
+            });
+        } else if (type.equals("invite_cancelled")) {
+            String message = messageObj.getString("message");
+            Platform.runLater(() -> {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION, message, ButtonType.OK);
+                alert.setTitle("Invitació cancel·lada");
+                alert.setHeaderText(null);
+                alert.showAndWait();
             });
         }
     }

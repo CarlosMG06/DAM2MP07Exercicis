@@ -25,10 +25,12 @@ public class CtrlResult implements Initializable {
         }
     }
 
+    @FXML
     public void closeApp() {
         System.exit(0);
     }
 
+    @FXML
     public void toLobbyView() {
         UtilsViews.setView("ViewLobby");
     }

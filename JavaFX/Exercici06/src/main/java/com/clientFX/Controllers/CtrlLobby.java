@@ -1,5 +1,6 @@
 package com.clientFX;
 
+import java.lang.ModuleLayer.Controller;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -51,6 +52,10 @@ public class CtrlLobby implements Initializable {
             messageObj.put("type", "invite");
             messageObj.put("destination", dest);
             Main.wsClient.safeSend(messageObj.toString());
+
+            CtrlWaiting ctrl = UtilsViews.getController("Waiting");
+            ctrl.dest = choiceUser.getValue();
+            toWaitingView();
         }
     }
 
@@ -95,13 +100,13 @@ public class CtrlLobby implements Initializable {
                     Main.wsClient.safeSend(responseObj.toString());
                 });
             });
-        } else if (type.equals("invite_accept")) {
+        } else if (type.equals("invite_accepted")) {
             Platform.runLater(() -> {
                 CtrlCountdown ctrlCountdown = (CtrlCountdown) UtilsViews.getController("ViewCountdown");
                 ctrlCountdown.onShow();
                 UtilsViews.setView("ViewCountdown");
             });
-        } else if (type.equals("invite_decline")) {
+        } else if (type.equals("invite_declined")) {
             String message = messageObj.optString("message", "L'usuari ha declinat la invitació.");
             Platform.runLater(() -> {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION, message, ButtonType.OK);
@@ -109,6 +114,22 @@ public class CtrlLobby implements Initializable {
                 alert.setHeaderText(null);
                 alert.showAndWait();
             });
+        // } else if (type.equals("invite_cancelled")) {
+        //     String message = messageObj.optString("message", "L'usuari ha cancel·lat la invitació.");
+        //     Platform.runLater(() -> {
+        //         Alert alert = new Alert(Alert.AlertType.INFORMATION, message, ButtonType.OK);
+        //         alert.setTitle("Invitació cancel·lada");
+        //         alert.setHeaderText(null);
+        //         alert.showAndWait();
+        //     });
+        // } else if (type.equals("confirmation")) {
+        //     String message = messageObj.getString("message");
+        //     Platform.runLater(() -> {
+        //         Alert alert = new Alert(Alert.AlertType.INFORMATION, message, ButtonType.OK);
+        //         alert.setTitle("Confirmació");
+        //         alert.setHeaderText(null);
+        //         alert.showAndWait();
+        //     });
         }
     }
 
