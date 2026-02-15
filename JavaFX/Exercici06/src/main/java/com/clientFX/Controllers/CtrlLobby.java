@@ -1,4 +1,4 @@
-package com.clientFX;
+package com.clientFX.Controllers;
 
 import java.lang.ModuleLayer.Controller;
 import java.net.URL;
@@ -7,6 +7,9 @@ import java.util.ResourceBundle;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import com.clientFX.UtilsViews;
+import com.clientFX.Main;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -53,7 +56,7 @@ public class CtrlLobby implements Initializable {
             messageObj.put("destination", dest);
             Main.wsClient.safeSend(messageObj.toString());
 
-            CtrlWaiting ctrl = UtilsViews.getController("Waiting");
+            CtrlWaiting ctrl = (CtrlWaiting) UtilsViews.getController("Waiting");
             ctrl.dest = choiceUser.getValue();
             toWaitingView();
         }

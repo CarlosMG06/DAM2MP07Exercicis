@@ -6,6 +6,11 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.clientFX.Controllers.CtrlConfig;
+import com.clientFX.Controllers.CtrlLobby;
+import com.shared.ClientData;
+import com.shared.GameObject;
+
 import javafx.animation.PauseTransition;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -18,6 +23,11 @@ import javafx.util.Duration;
 public class Main extends Application {
 
     public static UtilsWS wsClient;
+    public static String clientName = "";
+    public static String rivalName = "";
+    public static List<ClientData> clients = new ArrayList<>();
+    public static List<GameObject> objects = new ArrayList<>();
+    public static boolean partidaFinalizada = false;
 
     public static int port = 3000;
     public static String protocol = "http";
@@ -133,5 +143,9 @@ public class Main extends Application {
                 ctrlConfig.txtMessage.setText("");
             });
         }
+    }
+
+    public static String getClientColor() {
+        return clients.stream().filter(c -> c.name.equals(clientName)).map(c -> c.color).findFirst().orElse("gray");
     }
 }

@@ -1,7 +1,9 @@
-package com.clientFX;
+package com.clientFX.Controllers;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import com.clientFX.Main;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;

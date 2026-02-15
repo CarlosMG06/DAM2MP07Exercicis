@@ -17,7 +17,6 @@ import java.util.concurrent.CountDownLatch;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -230,20 +229,19 @@ public class Main extends WebSocketServer {
                         .toString());
                 sendSafe(conn, msg(T_CONFIRMATION).put(K_MESSAGE, "Invitació enviada a " + destName).toString());
             }
-            // // Cancel·lació d'invitació
-            // case T_INVITE_CANCEL -> {
-            //     String inviter = obj.optString(K_DESTINATION, "");
-            //     String invitee = origin;
-            //     WebSocket dest = clients.socketByName(invitee);  
-            //     if (dest != null) {
-            //         sendSafe(dest, msg(T_INVITE_CANCELLED)
-            //                 .put(K_ORIGIN, invitee)
-            //                 .put(K_MESSAGE, "L'invitador ha cancel·lat la invitació.")
-            //                 .toString());
-            //     }
-            //     sendSafe(conn, msg(T_CONFIRMATION).put(K_MESSAGE, "Invitació cancel·lada.").toString());
-            // }
-            //
+            // Cancel·lació d'invitació
+            case T_INVITE_CANCEL -> {
+                String destName = obj.optString(K_DESTINATION, "");
+                WebSocket dest = clients.socketByName(destName);  
+                if (dest != null) {
+                    sendSafe(dest, msg(T_INVITE_CANCELLED)
+                            .put(K_ORIGIN, destName)
+                            .put(K_MESSAGE, "L'invitador ha cancel·lat la invitació.")
+                            .toString());
+                }
+                sendSafe(conn, msg(T_CONFIRMATION).put(K_MESSAGE, "Invitació cancel·lada.").toString());
+            }
+            // Acceptació d'invitació
             case T_INVITE_ACCEPT -> {
                 String inviter = obj.optString(K_DESTINATION, "");
                 String invitee = origin;
@@ -255,6 +253,7 @@ public class Main extends WebSocketServer {
                 if (origSocket != null) sendSafe(origSocket, notify.toString());
                 if (destSocket != null) sendSafe(destSocket, notify.toString());
             }
+            // Rebuig d'invitació
             case T_INVITE_DECLINE -> {
                 String inviter = obj.optString(K_DESTINATION, "");
                 String invitee = origin;
