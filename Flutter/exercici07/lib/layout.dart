@@ -127,7 +127,7 @@ class _LayoutState extends State<Layout> {
               if (appData.isLoading)
                 Positioned.fill(
                   child: Container(
-                    color: CupertinoColors.systemGrey.withOpacity(0.5),
+                    color: CupertinoColors.systemGrey.withValues(alpha: 0.5),
                     child: const Center(
                       child: CupertinoActivityIndicator(
                         radius: 20,

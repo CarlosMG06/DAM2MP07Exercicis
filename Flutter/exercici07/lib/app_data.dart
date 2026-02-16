@@ -197,7 +197,29 @@ class AppData extends ChangeNotifier {
           final dx = parseDouble(parameters['x']);
           final dy = parseDouble(parameters['y']);
           final radius = max(0.0, parseDouble(parameters['radius']));
-          addDrawable(Circle(center: Offset(dx, dy), radius: radius));
+
+          double strokeWidth = 2.0;
+          if (parameters['strokeWidth'] != null) {
+            strokeWidth = parseDouble(parameters['strokeWidth']);
+          }
+
+          Color color = Colors.black; 
+          if (parameters['colorR'] != null &&
+              parameters['colorG'] != null &&
+              parameters['colorB'] != null) {
+            final colorR = parseDouble(parameters['colorR']).toInt();
+            final colorG = parseDouble(parameters['colorG']).toInt();
+            final colorB = parseDouble(parameters['colorB']).toInt();
+            color = Color.fromARGB(255, colorR, colorG, colorB);
+          }
+
+          PaintingStyle style = PaintingStyle.stroke;
+          if (parameters['fill'] != null) {
+            final fill = parameters['fill'];
+            style = fill ? PaintingStyle.fill : PaintingStyle.stroke;
+          }
+
+          addDrawable(Circle(center: Offset(dx, dy), radius: radius, strokeWidth: strokeWidth, color: color, style: style));
         } else {
           print("Missing circle properties: $parameters");
         }
@@ -214,7 +236,23 @@ class AppData extends ChangeNotifier {
           final endY = parseDouble(parameters['endY']);
           final start = Offset(startX, startY);
           final end = Offset(endX, endY);
-          addDrawable(Line(start: start, end: end));
+
+          Color color = Colors.black;
+          if (parameters['colorR'] != null &&
+              parameters['colorG'] != null &&
+              parameters['colorB'] != null) {
+            final colorR = parseDouble(parameters['colorR']).toInt();
+            final colorG = parseDouble(parameters['colorG']).toInt();
+            final colorB = parseDouble(parameters['colorB']).toInt();
+            color = Color.fromARGB(255, colorR, colorG, colorB);
+          }
+
+          double strokeWidth = 2.0;
+          if (parameters['strokeWidth'] != null) {
+            strokeWidth = parseDouble(parameters['strokeWidth']);
+          }
+
+          addDrawable(Line(start: start, end: end, color: color, strokeWidth: strokeWidth));
         } else {
           print("Missing line properties: $parameters");
         }
@@ -231,12 +269,78 @@ class AppData extends ChangeNotifier {
           final bottomRightY = parseDouble(parameters['bottomRightY']);
           final topLeft = Offset(topLeftX, topLeftY);
           final bottomRight = Offset(bottomRightX, bottomRightY);
-          addDrawable(Rectangle(topLeft: topLeft, bottomRight: bottomRight));
+
+          double strokeWidth = 2.0;
+          if (parameters['strokeWidth'] != null) {
+            strokeWidth = parseDouble(parameters['strokeWidth']);
+          }
+
+          Color color = Colors.black; 
+          if (parameters['colorR'] != null &&
+              parameters['colorG'] != null &&
+              parameters['colorB'] != null) {
+            final colorR = parseDouble(parameters['colorR']).toInt();
+            final colorG = parseDouble(parameters['colorG']).toInt();
+            final colorB = parseDouble(parameters['colorB']).toInt();
+            color = Color.fromARGB(255, colorR, colorG, colorB);
+          }
+
+          PaintingStyle style = PaintingStyle.stroke;
+          if (parameters['fill'] != null) {
+            final fill = parameters['fill'];
+            style = fill ? PaintingStyle.fill : PaintingStyle.stroke;
+          }
+
+          addDrawable(Rectangle(topLeft: topLeft, bottomRight: bottomRight, strokeWidth: strokeWidth, color: color, style: style));
         } else {
           print("Missing rectangle properties: $parameters");
         }
         break;
+      case 'draw_text':
+        if (parameters['text'] != null &&
+            parameters['positionX'] != null &&
+            parameters['positionY'] != null) {
+          final text = parameters['text'];
+          final positionX = parseDouble(parameters['positionX']);
+          final positionY = parseDouble(parameters['positionY']);
+          final position = Offset(positionX, positionY);
 
+          Color color = Colors.black; 
+          if (parameters['colorR'] != null &&
+              parameters['colorG'] != null &&
+              parameters['colorB'] != null) {
+            final colorR = parseDouble(parameters['colorR']).toInt();
+            final colorG = parseDouble(parameters['colorG']).toInt();
+            final colorB = parseDouble(parameters['colorB']).toInt();
+            color = Color.fromARGB(255, colorR, colorG, colorB);
+          }
+
+          double fontSize = 14.0;
+          if(parameters['fontSize'] != null) {
+            fontSize = parseDouble(parameters['fontSize']);
+          }
+          FontWeight fontWeight = FontWeight.normal;
+          if (parameters['bold'] != null) {
+            final bold = parameters['bold'];
+            if (bold) fontWeight = FontWeight.bold;
+          }
+          FontStyle fontStyle = FontStyle.normal;
+          if (parameters['italic'] != null) {
+            final italic = parameters['italic'];
+            if (italic) fontStyle = FontStyle.italic;
+          }
+          String? fontFamily;
+          if (parameters['fontFamily'] != null) {
+            fontFamily = parameters['fontFamily'].toString();
+          }
+          addDrawable(TextElement( 
+            text: text, position: position, color: color, fontSize: fontSize, 
+            fontWeight: fontWeight, fontStyle: fontStyle, fontFamily: fontFamily
+          ));
+        } else {
+          print("Missing rectangle properties: $parameters");
+        }
+        break;
       default:
         print("Unknown function call: ${fixedJson['name']}");
     }
