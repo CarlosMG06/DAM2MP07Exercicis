@@ -43,11 +43,22 @@ class _LayoutState extends State<Layout> {
                     flex: 2,
                     child: Container(
                       color: CupertinoColors.systemGrey5,
-                      child: CustomPaint(
-                        painter: CanvasPainter(
-                          drawables: appData.drawables,
-                        ),
-                        child: Container(),
+                      child: LayoutBuilder(
+                        builder: (context, constraints) {
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            appData.setCanvasSize(Size(
+                              constraints.maxWidth,
+                              constraints.maxHeight
+                            ));
+                          });
+                          return CustomPaint(
+                            painter: CanvasPainter(
+                              drawables: appData.drawables,
+                              selectedIds: appData.selectionManager.getSelectedIds(),
+                            ),
+                            child: Container(),
+                          );
+                        },
                       ),
                     ),
                   ),
