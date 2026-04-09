@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="flutter_cupertino_desktop_kit API docs, for the Dart programming language.">
+  <title>flutter_cupertino_desktop_kit - Dart API docs</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="static-assets/github.css?v1">
+  <link rel="stylesheet" href="static-assets/styles.css?v1">
+  <link rel="icon" href="static-assets/favicon.png?v1">
+  
+</head>
+
+<body data-base-href="" data-using-base-href="false" class="light-theme">
+<div id="overlay-under-drawer"></div>
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="https://optimisme.github.io/flutter_cupertino_desktop_kit/">flutter_cupertino_desktop_kit package</a></li>
+  </ol>
+  <div class="self-name">flutter_cupertino_desktop_kit</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <button class="toggle" id="theme-button" title="Toggle between light and dark mode" aria-label="Light and dark mode toggle">
+    <span id="dark-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      dark_mode
+    </span>
+    <span id="light-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      light_mode
+    </span>
+  </button>
+</header>
+<main>
+  <div id="dartdoc-main-content" class="main-content">
+      
+<section class="desc markdown">
+  <h1 id="cupertino-desktop-kit-cdk">Cupertino Desktop Kit (CDK)</h1>
+<p>This project, defines Flutter widgets for Desktop, providing a macOS style aesthetic, built upon the foundation of Cupertino widgets.</p>
+<p>The goal is to be able to develop applications for all desktop systems, including the web, filling in the gaps in the Cupertino theme.</p>
+<p>The CDK prefix strives to be distinctive within the Flutter ecosystem, while remaining concise and suggestive of Flutter Desktop and macOS AppKit. In doing so, it captures the essence of the project.</p>
+<h2 id="getting-started">Getting Started</h2>
+<p>The project itself is just a set of libraries that define and manage widgets. However, it includes an example of how to use them. The example can be seen on this website:</p>
+<p><a href="https://optimisme.github.io/flutter_cupertino_desktop_kit/gh-pages/example/">CDK toolkit web Example</a></p>
+<p><a href="https://optimisme.github.io/flutter_cupertino_desktop_kit/gh-pages/doc/">CDK library documentation</a></p>
+<img src="https://optimisme.github.io/flutter_cupertino_desktop_kit/demo_image.png" alt="CDK Example" style="max-width: 500px; width: 100%;">
+<h2 id="api-stability">API Stability</h2>
+<ul>
+<li>Public exports are curated from <code>lib/flutter_cupertino_desktop_kit.dart</code>.</li>
+<li>Implementation files live in <code>lib/src/</code>.</li>
+<li>Release checks: <code>doc/api_review_checklist.md</code>.</li>
+<li>Dialog behavior contract: <code>doc/dialog_invariants.md</code>.</li>
+<li>Theme extension reference: <code>doc/theming_extensions.md</code>.</li>
+</ul>
+<h2 id="scope-and-non-goals">Scope and Non-goals</h2>
+<ul>
+<li>Scope: desktop-first Cupertino-style widgets for Flutter (<code>macOS</code>, <code>Windows</code>, <code>Linux</code>, <code>Web</code>).</li>
+<li>Scope: consistent desktop interactions (focus, keyboard shortcuts, overlays, traversal).</li>
+<li>Non-goal: full Material replacement.</li>
+<li>Non-goal: mobile-first adaptive behavior parity for every widget.</li>
+</ul>
+<h2 id="theming">Theming</h2>
+<ul>
+<li>Runtime theme state is managed by <code>CDKTheme</code> (appearance + accent + app focus).</li>
+<li>Immutable component tokens are exposed through <code>ThemeExtension</code>:
+<code>CDKThemeColorTokens</code>, <code>CDKThemeRuntimeTokens</code>, <code>CDKThemeRadiusTokens</code>,
+<code>CDKThemeSpacingTokens</code>, <code>CDKThemeElevationTokens</code>,
+<code>CDKThemeTypographyTokens</code>.</li>
+<li>Legacy <code>CDKThemeNotifier</code> access remains available as a compatibility shim.</li>
+</ul>
+<p>Read tokens in widgets:</p>
+<pre class="language-dart"><code class="language-dart">final colors = Theme.of(context).extension&lt;CDKThemeColorTokens&gt;()!;
+final runtime = Theme.of(context).extension&lt;CDKThemeRuntimeTokens&gt;()!;
+final typography = Theme.of(context).extension&lt;CDKThemeTypographyTokens&gt;()!;
+</code></pre>
+<p>Use semantic text roles instead of hardcoded font sizes:</p>
+<pre class="language-dart"><code class="language-dart">const CDKText('Section title', role: CDKTextRole.title);
+const CDKText('Body copy', role: CDKTextRole.body);
+</code></pre>
+<h2 id="keyboard-and-dialog-invariants">Keyboard and Dialog Invariants</h2>
+<ul>
+<li><code>Escape</code> closes only the top-most dismissible dialog.</li>
+<li>Outside-click closes only dialogs configured with outside-dismiss.</li>
+<li>Dialog hosts use focus traversal groups for predictable desktop tab-order.</li>
+<li>Dialog focus is restored to the previous focus node on close.</li>
+<li><code>CDKDialogConfirm</code>: <code>Enter</code> confirms and <code>Escape</code> cancels.</li>
+<li><code>CDKDialogPrompt</code>: text field auto-focuses, <code>Enter</code> submits when valid, <code>Escape</code> cancels.</li>
+</ul>
+<h2 id="api-quickstart">API Quickstart</h2>
+<ul>
+<li>Buttons:
+<code>CDKButton</code>, <code>CDKButtonSwitch</code>, <code>CDKButtonIcon</code>, <code>CDKButtonRadio</code>,
+<code>CDKButtonCheckBox</code>.</li>
+<li>Dialogs:
+<code>CDKDialogsManager.showPopover</code>, <code>showPopoverArrowed</code>, <code>showModal</code>,
+<code>showDraggable</code>, <code>showConfirm</code>, <code>showPrompt</code>, with <code>CDKDialogController</code> for lifecycle.</li>
+<li>Fields:
+<code>CDKFieldText</code>, <code>CDKFieldNumeric</code>, <code>CDKFieldNumericSlider</code>, <code>CDKFieldColorHex</code>.</li>
+<li>Pickers:
+<code>CDKPickerSlider</code>, <code>CDKPickerButtonsSegmented</code>, <code>CDKPickerCheckList</code>,
+<code>CDKPickerColor</code>, <code>CDKPickerThemeColors</code>.</li>
+</ul>
+<h3 id="confirm-and-prompt-helpers">Confirm and prompt helpers</h3>
+<pre class="language-dart"><code class="language-dart">final bool? confirmed = await CDKDialogsManager.showConfirm(
+  context: context,
+  title: 'Delete file?',
+  message: 'This action cannot be undone.',
+  confirmLabel: 'Delete',
+  isDestructive: true,
+);
+// true = confirmed, false/null = canceled
+
+final String? name = await CDKDialogsManager.showPrompt(
+  context: context,
+  title: 'Rename layer',
+  placeholder: 'Layer name',
+  initialValue: 'Layer 01',
+  validator: (value) =&gt;
+      value.trim().length &lt; 3 ? 'Use at least 3 characters.' : null,
+);
+// null = canceled, non-null = submitted text
+</code></pre>
+<p><code>showPopover</code> and <code>showPopoverArrowed</code> default to <code>showBackgroundShade: false</code>.
+<code>showModal</code> and <code>showDraggable</code> default to <code>showBackgroundShade: false</code>.
+<code>showConfirm</code> and <code>showPrompt</code> default to <code>showBackgroundShade: true</code> (gray
+blocking backdrop behind the active dialog). Override per call when needed.</p>
+<h3 id="add-the-library-as-a-dependency-at-pubspecyaml">Add the library as a dependency at pubspec.yaml</h3>
+<pre class="language-yaml"><code class="language-yaml">dependencies:
+  flutter:
+    sdk: flutter
+  flutter_cupertino_desktop_kit: "&gt;= 0.0.1 &lt; 999.0.0"
+</code></pre>
+<h3 id="import-the-library">Import the library</h3>
+<pre class="language-dart"><code class="language-dart">import 'package:flutter_cupertino_desktop_kit/flutter_cupertino_desktop_kit.dart';
+</code></pre>
+<p>Then</p>
+<pre class="language-bash"><code class="language-bash">flutter pub get
+flutter pub upgrade
+</code></pre>
+<h3 id="use-it">Use it</h3>
+<pre class="language-dart"><code class="language-dart">return const CDKApp(
+    defaultAppearance: CDKThemeAppearance.system,
+    defaultColor:
+        "systemBlue", 
+    child: LayoutDesktop(title: "App Desktop Title"));
+</code></pre>
+<h2 id="run-the-example-as-a-local-app">Run the example as a local app:</h2>
+<pre class="language-bash"><code class="language-bash">cd example
+flutter create .
+flutter run
+</code></pre>
+<p>Create the project if necessary</p>
+<pre class="language-bash"><code class="language-bash">flutter create . --template=package
+rm lib/flutter_cupertino_desktop_kit.dart
+rm -r test
+cd example
+flutter create . --platform macos # Or the platform of your choice
+flutter run -d macos --enable-impeller
+</code></pre>
+</section>
+
+
+      <section class="summary">
+          <h2>Libraries</h2>
+        <dl>
+          <dt id="cdk">
+  <span class="name"><a class="deprecated" href="cdk/">cdk</a></span> 
+
+</dt>
+<dd>Legacy entrypoint for Cupertino Desktop Kit (CDK).
+</dd>
+
+          <dt id="flutter_cupertino_desktop_kit">
+  <span class="name"><a href="flutter_cupertino_desktop_kit/">flutter_cupertino_desktop_kit</a></span> 
+
+</dt>
+<dd>Public package entrypoint for Cupertino Desktop Kit (CDK).
+</dd>
+
+        </dl>
+      </section>
+  </div> <!-- /.main-content -->
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+    <li><a href="https://optimisme.github.io/flutter_cupertino_desktop_kit/">flutter_cupertino_desktop_kit package</a></li>
+</ol>
+
+    <h5 class="hidden-xs"><span class="package-name">flutter_cupertino_desktop_kit</span> <span class="package-kind">package</span></h5>
+    <ol>
+      <li class="section-title">Libraries</li>
+      <li><a class="deprecated" href="cdk/">cdk</a></li>
+      <li><a href="flutter_cupertino_desktop_kit/">flutter_cupertino_desktop_kit</a></li>
+</ol>
+
+  </div>
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div>
+</main>
+<footer>
+  <span class="no-break">
+    flutter_cupertino_desktop_kit
+      0.0.18
+  </span>
+  
+</footer>
+
+
+<script src="static-assets/highlight.pack.js?v1"></script>
+<script src="static-assets/docs.dart.js"></script>
+
+</body>
+</html>
+
