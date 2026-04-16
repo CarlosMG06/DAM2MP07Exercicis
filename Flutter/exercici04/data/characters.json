@@ -1,0 +1,82 @@
+[
+    {
+        "name": "Kris",
+        "description": "Kris Dreemurr is the main protagonist. They are the quiet first hero of the prophecy, who becomes braver in later Chapters. They live with their adoptive mother, Toriel, at the Dreemurr residence in northern Hometown. In combat, Kris is the party's leader and excels at ACTing. For most of the game, Kris is controlled by the player.",
+        "image": "images/kris.png"
+    },
+    {
+        "name": "Susie",
+        "description": "Susie is one of the main characters. She is the rude and rebellious second hero of the prophecy, who warms up to others in later Chapters. Her home is unknown, though she becomes dismissive at the east apartments in Chapter 4. In combat, she wields an axe and boasts the highest HP and Attack of the party.",
+        "image": "images/susie.png"
+    },
+    {
+        "name": "Ralsei",
+        "description": "Ralsei is a Darkner prince and one of the main characters. He is the gentle and selfless third hero of the prophecy, though he begins to consider his own feelings in later Chapters. Ralsei rules over Castle Town, where he first appears to inform Kris and Susie of their destiny. In combat, he wields his scarf and can use Heal Prayer to heal the party or cast Pacify to help SPARE enemies.",
+        "image": "images/ralsei.png"
+    },
+    {
+        "name": "Noelle",
+        "description": "Noelle Holiday is one of the main characters. She is one of Kris's classmates, as well as their neighbour and childhood friend. Noelle is kind-hearted and timid, and gradually learns to stand up for herself in later Chapters. She lives in the northwest side of hometown with her mother Carol, and routinely visits her father Rudolph in the hospital. In Chapter 2, she wields a ring during battle and is capable of casting ice magic.",
+        "image": "images/noelle.png"
+    },
+    {
+        "name": "Lancer",
+        "description": "Lancer is a Darkner child from Card Kingdom and one of the primary supporting characters. In Chapter 1, he serves as a miniboss and secondary antagonist, where he attempts to thwart the party, but ultimately becomes friends with them.In Chapter 2, Lancer enters Kris's inventory, which allows him to visit the Cyber World with the party and later the TV World in Chapter 3.",
+        "image": "images/lancer.png"
+    },
+    {
+        "name": "Rouxls Kaard",
+        "description": "Rouxls Kaard is a Darkner from the Card Kingdom and a recurring miniboss in Deltarune. He proclaims himself the \"Duke of Puzzles\" and is a servant to King in Chapter 1. Rouxls Kaard attempts to use Early Modern English speech patterns, presumably to appear educated, but it is highly inaccurate.",
+        "image": "images/rouxls.png"
+    }
+    {
+        "name": "King",
+        "description": "King is a Darkner, the father of Lancer, and one of Card Kingdom's four kings. Following the Knight's appearance, King usurped the throne from the other three kings and took it upon himself to protect the Eastern Fountain. He is the final boss of Chapter 1 of Deltarune.",
+        "image": "images/king.png"
+    },
+    {
+        "name": "Queen",
+        "description": "Serial Number Q5U4EX7YY2E9N, shortened to Queen, is a Darkner who rules the Cyber World. She is the main antagonist and penultimate boss of Chapter 2 of Deltarune. At the end of Chapter 2, she uses her GIGA Queen mecha to fight the party's Thrash Machine.",
+        "image": "images/queen.png"
+    },
+    {
+        "name": "Tenna",
+        "description": "Mr. \"Ant\" Tenna, more often known as simply Tenna, is the director of TV Time who also controls TV World. He is the main antagonist and penultimate boss of Chapter 3 of Deltarune. Tenna embodies the archetypical TV host: he is energetic and enthusiastic, and always has a quick quip. Exuberant and cartoony, he makes theatrical gestures and exaggerated movements.",
+        "image": "images/tenna.png"
+    },
+    {
+        "name": "Knight",
+        "description": "The Roaring Knight is the main antagonist. It serves as the final boss and Shadow Crystal boss of Chapter 3, as well as the main antagonist of Chapter 4. While it does not physically appear in Chapter 1 or 2, King and Queen both align themselves with the Knight after the Dark Fountains it made gave form to Card Kingdom and the Cyber World. In Chapter 3, it works with Tenna to divert the heroes.",
+        "image": "images/knight.png"
+    },
+    {
+        "name": "Toriel",
+        "description": "Toriel is a Lightner and a returning character from Undertale. She is the mother of Kris Dreemurr and Asriel Dreemurr. She lives with her children at the Dreemurr residence, located at the northern end of Hometown. Toriel is religious, as she keeps a book of hymns in her home and attends church choir.",
+        "image": "images/toriel.png"
+    },
+    {
+        "name": "Berdly",
+        "description": "Berdly is the self-proclaimed \"Number 1\" student in Hometown's school. Berdly is Kris Dreemurr's and Noelle Holiday's classmate, the latter whom he considers as the \"Number 2\" student in Alphys's class. He has a minor role in Chapter 1, and gains relevance in later Chapters.",
+        "image": "images/berdly.png"
+    },
+    {
+        "name": "Asgore Dreemurr",
+        "description": "Asgore Dreemurr is a Lightner and a returning character from Undertale. He is the father of Kris Dreemurr and Asriel. He lives alone at the Flower King shop in Hometown. Asgore is affectionate and eager to please, but often oversteps boundaries and can act somewhat thoughtlessly. This is shown in his numerous attempts to reestablish a relationship with Toriel despite her obvious discomfort.",
+        "image": "images/asgore.png"
+    },
+    {
+        "name": "Sans",
+        "description": "Sans is a Lightner and a returning character from Undertale. He runs an eponymous grocery store in Hometown, where he is the self-proclaimed \"janitor\". Sans appears to be laid-back, with his lowercase dialogue reflecting his personality. Sans enjoys messing around with others for his amusement. He also seems to be amiable towards Kris and eager to interact with the citizens of Hometown after moving in recently.",
+        "image": "images/sans.png"
+    },
+    {
+        "name": "Rudy Holiday",
+        "description": "Rudolph \"Rudy\" Holiday is the bedridden father of Noelle Holiday and December Holiday, and the husband of Carol Holiday. He can be visited at the end of Chapters 1 and 2, as well as during the Light World segment of Chapter 4. Rudy is outspoken, jovial, lighthearted, and honest. He enjoys conversing, occasionally curses, and is quick to joke about anything to lighten the mood.",
+        "image": "images/rudy.png"
+    },
+    {
+        "name": "Carol Holiday",
+        "description": "Carol Holiday the mayor of Hometown, the mother of Noelle Holiday and December Holiday, and the wife of Rudolph Holiday. Despite being mentioned as early as Chapter 1, she makes her first appearance in Chapter 4, where she abruptly returns to Noelle's House.",
+        "image": "images/carol.png"
+    }
+]

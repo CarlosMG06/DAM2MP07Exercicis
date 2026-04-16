@@ -1,0 +1,82 @@
+[
+    {
+        "name": "Hometown",
+        "description": "Hometown is the primary location in Deltarune. It is currently the only Light World area available, and many Lightners met during the game live there. In each Chapter, a new Dark World appears somewhere in the town. Notable locations include the Dreemurr residence, the school, Noelle's house, the church, and the hospital.",
+        "image": "images/dreemurr_residence.png"
+    },
+    {
+        "name": "Castle Town",
+        "description": "Castle Town, officially the Kingdom of Darkness, is a location within the closet Dark World in Deltarune. It houses Ralsei's castle and the Grand Fountain. It is unique in its ability to host Darkners from other Dark Worlds. Gathering recruits can unlock new activities in Castle Town.",
+        "image": "images/castle_town.png"
+    },
+    {
+        "name": "Field of Hopes and Dreams",
+        "description": "The Field of Hopes and Dreams is the first Card Kingdom area in Chapter 1 of Deltarune. In the unused classroom, this area is represented by the large purple rug. It's a vast region that consists of winding pathways of purple, swaying grass, with some red-leafed trees scattered throughout.",
+        "image": "images/field.png"
+    },
+    {
+        "name": "Great Board",
+        "description": "The Great Board is a small area in Card Kingdom. It is composed of black and red squares in a checker pattern. It is a relatively linear and minimalist path that leads to the Scarlet Forest. In the school's unused classroom, it's represented by a red-and-black checkerboard with chess and checker pieces strewn atop.",
+        "image": "images/great_board.png"
+    },
+    {
+        "name": "Scarlet Forest",
+        "description": "The Scarlet Forest is the second major area within Card Kingdom in Chapter 1 of Deltarune. In the unused classroom, it is represented by a bunch of scattered red bricks, leading to Card Castle. It consists of thin, red pathways surrounded by dense, blocky, red-leafed trees and bushes.",
+        "image": "images/forest.png"
+    },
+    {
+        "name": "Card Castle",
+        "description": "Card Castle is Card Kingdom's final area in Chapter 1 of Deltarune. It is the home of King and Lancer. It has five floors, and contains two prisons accessible via elevator. It also houses the Eastern Fountain. In the unused classroom, it is represented by a closet with three racks.",
+        "image": "images/card_castle.png"
+    },
+    {
+        "name": "Cyber Field",
+        "description": "Cyber Field is the first area within the Cyber World in Chapter 2 of Deltarune. The area is highly reminiscent of computer chips. The ground is entirely green and is raised above an abyss. Floating screens depicting various characters border the platforms.",
+        "image": "images/cyber_field.png"
+    },
+    {
+        "name": "Cyber City",
+        "description": "Cyber City is the second area within the Cyber World in Chapter 2 of Deltarune. It consists of a trash area, the city itself, and a mix of amusement park-themed areas. It represents the internet, with car-filled highways representing internet traffic.",
+        "image": "images/cyber_city.png"
+    },
+    {
+        "name": "Queen's Mansion",
+        "description": "Queen's Mansion is the Cyber World's final area in Chapter 2 of Deltarune. It is the seat of Queen, who rules over it. Unique to Queen's Mansion, its overworld music continues to play during battles in most areas, replacing Rude Buster. Notably, the mansion contains a battery acid lake and a ferris wheel.",
+        "image": "images/queen_mansion.png"
+    },
+    {
+        "name": "TV World",
+        "description": "TV World is the Dark World located inside the Dreemurr residence. It is the primary setting of Chapter 3 of Deltarune. It is primarily presented as a studio-like location, with red carpets strewn across the floor and similarly red walls with posters depicting various shows.",
+        "image": "images/tv_world.png"
+    },
+    {   
+        "name": "Green Room",
+        "description": "The Green Room is a prominent location in Chapter 3's TV World. True to its name, it serves as the green room of TV Time.  Numerous Darkners employed by Tenna either work or spend their free time in parts of the Green Room. ",
+        "image": "images/green_room.png"
+    },
+    {
+        "name": "Desert Board",
+        "description": "The Desert Board is the first half of TV Time's Round 1, and is the first board in the The Legend of Tenna minigame. It is a desert that has occasional water areas, cacti, breakable pots, and Sphinx-Tenna. The party must find at least three keys and the Mooncloud Stone to enter the northern pyramid and begin the Cooking Show.",
+        "image": "images/desert_board.png"
+    },
+    {
+        "name": "Island Board",
+        "description": "The Island Board, also known as Kodakoda Island, is the first half of TV Time's Round 2, and is the second board within the The Legend of Tenna minigame. It is set on a desert island. The goal is to reach the Atlantis stadium, by reuniting Lanino and Elnina at the Lover's Peak, and taking the rainbow there. ",
+        "image": "images/island_board.png"
+    },
+    {
+        "name": "Cold Place",
+        "description": "The Cold Place is the easternmost region in TV World. The party visits this location twice during Chapter 3, with the second visit making it TV World's final area. It is the location of the Dreemurr residence Fountain created by Kris.",
+        "image": "images/cold_place.png"
+    },
+    {
+        "name": "Dark Sanctuaries",
+        "description": "The Dark Sanctuaries are three Dark Worlds formed during Chapter 4 within Hometown's church. The prophecy is heavily featured within the Dark Sanctuaries, which contain fragments of the prophecy in the form of floating glass tapestries.",
+        "image": "images/dark_sanctuaries.png"
+    },
+    {
+        "name": "Study",
+        "description": "The study is a sub-area in the first and second Dark Sanctuaries during Chapter 4. It consists of a small, two-story room adorned with rustic decorations, bookshelves, and a desk at its center. It is where the Old Man normally resides.",
+        "image": "images/study.png"
+    }
+]

@@ -1,0 +1,132 @@
+[
+    {
+        "name": "Rudinn",
+        "description": "Rudinn is a Darkner enemy in the Card Kingdom, first encountered in the Field of Hopes and Dreams. It is based on the diamond card suit.",
+        "image": "images/rudinn.png"
+    },
+    {
+        "name": "Hathy",
+        "description": "Hathy is a Darkner enemy in the Card Kingdom, first encountered in the Field of Hopes and Dreams. It is based on the heart card suit.",
+        "image": "images/hathy.png"
+    },
+    {
+        "name": "Jigsawry",
+        "description": "Jigsawry is a Darkner enemy in the Card Kingdom, first encountered in the Field of Hopes and Dreams. Its appearance combines that of a piece from a jigsaw puzzle and a mouse with floppy ears.",
+        "image": "images/jigsawry.png"
+    },
+    {
+        "name": "C. Round",
+        "description": "C. Round is a Darkner from Card Kingdom. It's a harmless enemy encountered after Susie joins the party, but Susie insists on using violence against it. It resembles a red checker piece.",
+        "image": "images/c_round.png"
+    },
+    {
+        "name": "K. Round",
+        "description": "K. Round is the powered up form of C. Round and serves as a recurring miniboss in Chapter 1. C. Round assumes this form when it is crowned.",
+        "image": "images/k_round.png"
+    },
+    {
+        "name": "Clover",
+        "description": "Clover is a Darkner from Deltarune and a miniboss in Card Kingdom's Scarlet Forest. She represents the clubs suit.",
+        "image": "images/clover.png"
+    },
+    {
+        "name": "Jevil",
+        "description": "Jevil is a Darkner in Deltarune. He is the former court jester of Card Kingdom's King and the Shadow Crystal boss of Chapter 1.",
+        "image": "images/jevil.png"
+    },
+    {
+        "name": "Werewire",
+        "description": "Werewire is a Darkner enemy in the Cyber World, first encountered in Cyber Field. It is the first enemy the party battles in the Cyber World, after their first encounter with Queen. They are Plugboys that have been transformed by Queen's wires.",
+        "image": "images/werewire.png"
+    },
+    {
+        "name": "Tasque",
+        "description": "Tasque is a Darkner enemy in the Cyber World that is encountered in Cyber Field and Queen's Mansion. It's a cat-like creature that represents a computer task.",
+        "image": "images/tasque.png"
+    },
+    {
+        "name": "Virovirokun",
+        "description": "Virovirokun is a Darkner enemy in the Cyber World, first encountered in the Cyber Field. It's based on computer viruses.",
+        "image": "images/virovirokun.png"
+    },
+    {
+        "name": "Poppup",
+        "description": "Poppup is a Darkner enemy in the Cyber World that is first encountered in Cyber City. They act similar to pop-up ads, hence their name.",
+        "image": "images/poppup.png"
+    },
+    {
+        "name": "Ambyu-Lance",
+        "description": "Ambyu-Lance is a Darkner enemy in the Cyber World that is first encountered in Cyber City. They are based on antivirus programs.",
+        "image": "images/ambyu_lance.png"
+    },
+    {
+        "name": "Maus",
+        "description": "Maus is a Cyber World enemy based on computer mice. They are often provoked to attack when Kris interacts with cheese.",
+        "image": "images/maus.png"
+    },
+    {
+        "name": "Swatchling",
+        "description": "Swatchling is a bird-like Darkner enemy in Chapter 2. It is seen multiple times throughout the Cyber World, but it does not battle the party until Queen's Mansion, where it appears commonly.",
+        "image": "images/swatchling.png"
+    },
+    {
+        "name": "Spamton",
+        "description": "Spamton G. Spamton is a Darkner based on spam mail who is encountered as a miniboss in Cyber City. If Kris helps him access the basement of Queen's Mansion, he transforms into Spamton NEO, which serves as the Shadow Crystal boss of Chapter 2 normally, and as the final boss on the Weird Route.",
+        "image": "images/spamton.png"
+    },
+    {
+        "name": "Shadowguy",
+        "description": "Shadowguy is a Darkner enemy in Chapter 3 of Deltarune. They are based on extras from the silent era of television, day laborers who could play any role — from gangsters, office workers, or any extra role the scene called for.",
+        "image": "images/shadowguy.png"
+    },
+    {
+        "name": "Pippins",
+        "description": "Pippins is a diamond-shaped Darkner enemy based on dice. They are from the Card Kingdom, but aren't fought until TV World in Chapter 3. They appear as a cameo in the Chapter 1, and one appears as an NPC in Chapter 2.",
+        "image": "images/pippins.png"
+    },
+    {
+        "name": "Zapper",
+        "description": "Zappers are Darkner enemies and NPCs that resemble television remote controls. They act as bouncers in the TV World, tasked to guard certain doors and punish rulebreakers.",
+        "image": "images/zapper.png"
+    },
+    {
+        "name": "Watercooler",
+        "description": "Watercooler is an enemy found in Chapter 3 of Deltarune. It is first encountered behind the dedicated Cooler door of the Green Room, where it initially looks like an inanimate object. It is heavily implied to be a Mizzle stored inside the tank of a normal water cooler. ",
+        "image": "images/watercooler.png"
+    },
+    {
+        "name": "Guei",
+        "description": "Guei is a spirit Darkner enemy encountered in Chapter 4's first Dark Sanctuary. It takes the form of a blue flame, only revealing itself when it comes into contact with the party.",
+        "image": "images/guei.png"
+    },
+    {
+        "name": "Mizzle",
+        "description": "Mizzle is a Darkner enemy encountered in the first and third Dark Sanctuaries. She resides in a water cooler which is emptied after fighting her. Mizzles are the Dark World forms of holy water, housed in water bottles.",
+        "image": "images/mizzle.png"
+    },
+    {
+        "name": "Bibliox",
+        "description": "Bibliox is a Darkner in Chapters 3 and 4 of Deltarune. The first Bibliox is encountered as a singular hidden NPC in TV World, before later appearing as an enemy in the Dark Sanctuary. It is a wise, wizardly, book-like monster that inhabits libraries.",
+        "image": "images/bibliox.png"
+    },
+    {
+        "name": "Jackenstein",
+        "description": "Jackenstein is a Darkner miniboss encountered in the Dark Sanctuary's Dark Zone. In the Light World, Jackenstein is an orange jack-o'-lantern stored inside of the church's closet. It rests on top of a black coat sitting on a brown chair.",
+        "image": "images/jackenstein.png"
+    },
+    {
+        "name": "Organikk",
+        "description": "Organikk is a Darkner encountered in the 2nd and 3rd Sanctuaries, during Chapter 4 of Deltarune. They are based off of the church's pipe organ. ",
+        "image": "images/organikk.png"
+    },
+    {
+        "name": "Wicabel",
+        "description": "Wicabel is a bell-themed Darkner enemy in Chapter 4 of Deltarune. They first appear as inanimate statues in the Dark Sanctuary, before reappearing as enemies in the 2nd Sanctuary.",
+        "image": "images/wicabel.png"
+    },
+    {
+        "name": "Hammer of Justice",
+        "description": "The Hammer of Justice is the alternate form of Gerson's Darkner incarnation, and the Shadow Crystal boss of Chapter 4 of Deltarune. Once defeated, the party will receive the JusticeAxe.",
+        "image": "images/hammer_of_justice.png"
+    }
+]
