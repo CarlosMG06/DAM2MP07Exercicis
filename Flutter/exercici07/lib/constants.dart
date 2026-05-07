@@ -6,8 +6,7 @@ const tools = [
       "name": "draw_circle",
       "description":
           """Draw a circle with a certain radius.
-          Specify optional properties (width, color, fill) if and ONLY if prompted.
-          Don't specify any others as null. Simply don't include them at all.""",
+          Specify optional properties (width, color, fill) if and ONLY if prompted.""",
       "parameters": {
         "type": "object",
         "properties": {
@@ -30,8 +29,7 @@ const tools = [
       "name": "draw_line",
       "description":
           """Draw a line between two points. If position is unspecified, choose two random points between x=10, y=10 and x=100, y=100.
-          Specify optional properties (width and color) if and ONLY if prompted. 
-          Don't specify any others as null. Simply don't include them at all.""",
+          Specify optional properties (width and color) if and ONLY if prompted.""",
       "parameters": {
         "type": "object",
         "properties": {
@@ -54,8 +52,7 @@ const tools = [
       "name": "draw_rectangle",
       "description":
           """Draw a rectangle defined by the top-left and bottom-right points. 
-          Specify optional properties (width, color, fill) if and ONLY if prompted. 
-          Don't specify any others as null. Simply don't include them at all.""",
+          Specify optional properties (width, color, fill) if and ONLY if prompted.""",
       "parameters": {
         "type": "object",
         "properties": {
@@ -79,8 +76,7 @@ const tools = [
       "name": "draw_text",
       "description":
           """Draw text at a certain position.
-          Specify optional properties (size, color, bold, italic, fontFamily) if and ONLY if prompted. 
-          Don't specify any others as null. Simply don't include them at all.""",
+          Specify optional properties (size, color, bold, italic, fontFamily) if and ONLY if prompted.""",
       "parameters": {
         "type": "object",
         "properties": {
@@ -105,7 +101,6 @@ const tools = [
       "name": "select_drawables",
       "description": """Select drawables by various criteria.
       You can select by type or color.
-      When selecting by color, specify ALL 3 RGB color values, including values at 0.
       If no criteria specified, selects all drawables.
       Use "invert": true to select every drawable EXCEPT for ones with certain criteria.
       Use "add": true to add to current selection instead of replacing.""",
@@ -163,7 +158,7 @@ const tools = [
     "function": {
       "name": "modify_selected",
       "description": """Modify properties of all currently selected drawables.
-      Specify properties if and ONLY if they are to be changed. Don't specify any others as null. Simply don't include them at all.
+      Specify properties if and ONLY if they are to be changed.
       When modifying color, specify ALL 3 RGB color values, including values at 0.
       Interpret words like "middle" (50%), "center" (50%), "top" (0% Y), "bottom" (100% Y), "left" (0% X), "right" (100% X).
       "diagonal" refers to a line from (0%,0%) to (100%,100%).""",
@@ -177,19 +172,19 @@ const tools = [
           "fill": {"type": "boolean"},
           "moveX": {
             "type": "number",
-            "description": "Move horizontally. Can be absolute pixels or percentage (e.g., 10 or '10%')"
+            "description": "Move horizontally. Pixels or % of canvas (e.g., 10 or '10%')"
           },
           "moveY": {
             "type": "number", 
-            "description": "Move vertically. Can be absolute pixels or percentage"
+            "description": "Move vertically. Pixels or % of canvas"
           },
           "setX": {
             "type": "number",
-            "description": "Set absolute X position. Can be absolute pixels or percentage"
+            "description": "Set X position. Pixels or % of canvas"
           },
           "setY": {
             "type": "number",
-            "description": "Set absolute Y position. Can be absolute pixels or percentage"
+            "description": "Set Y position. Pixels or % of canvas"
           },
           "radius": {"type": "number"},
           "fontSize": {"type": "number"},

@@ -17,6 +17,7 @@ class AppData extends ChangeNotifier {
   IOClient? _ioClient;
   HttpClient? _httpClient;
   StreamSubscription<String>? _streamSubscription;
+  final StringBuffer _responseBuffer = StringBuffer();  // Optimización
 
   final List<Drawable> drawables = [];
 
@@ -51,6 +52,8 @@ class AppData extends ChangeNotifier {
   Future<void> callStream({required String question}) async {
     _isInitial = false;
     setLoading(true);
+    _responseBuffer.clear();  // Limpiar antes de nueva llamada
+    _responseText = "";
 
     try {
       var request = http.Request(
@@ -60,29 +63,41 @@ class AppData extends ChangeNotifier {
 
       request.headers.addAll({'Content-Type': 'application/json'});
       request.body =
-          jsonEncode({'model': 'llama3.2', 'prompt': question, 'stream': true});
+          jsonEncode({'model': 'llama3.2:3b', 'prompt': question, 'stream': true});
 
       var streamedResponse = await _client!.send(request);
+      int chunkCount = 0;
       _streamSubscription =
           streamedResponse.stream.transform(utf8.decoder).listen((value) {
         var jsonResponse = jsonDecode(value);
         var jsonResponseStr = jsonResponse['response'];
-        _responseText = "$_responseText\n$jsonResponseStr";
-        notifyListeners();
+        _responseBuffer.write(jsonResponseStr);
+        
+        // Actualizar UI cada 10 chunks para no sobrecargar
+        chunkCount++;
+        if (chunkCount % 10 == 0) {
+          _responseText = _responseBuffer.toString();
+          notifyListeners();
+        }
       }, onError: (error) {
         if (error is http.ClientException &&
             error.message == 'Connection closed while receiving data') {
-          _responseText += "\nRequest cancelled.";
+          _responseBuffer.write("\nRequest cancelled.");
         } else {
-          _responseText += "\nError during streaming: $error";
+          _responseBuffer.write("\nError during streaming: $error");
         }
+        _responseText = _responseBuffer.toString();
         setLoading(false);
         notifyListeners();
       }, onDone: () {
+        // Actualizar con la respuesta final completa
+        _responseText = _responseBuffer.toString();
         setLoading(false);
+        notifyListeners();
       });
     } catch (e) {
-      _responseText = "\nError during streaming.";
+      _responseBuffer.write("\nError during streaming.");
+      _responseText = _responseBuffer.toString();
       setLoading(false);
       notifyListeners();
     }
@@ -125,6 +140,8 @@ class AppData extends ChangeNotifier {
     const apiUrl = 'http://localhost:11434/api/chat';
     _isInitial = false;
     setLoading(true);
+    _responseBuffer.clear();
+    _responseText = "";
 
     final body = {
       "model": "llama3.2",
@@ -172,7 +189,8 @@ class AppData extends ChangeNotifier {
     _httpClient = HttpClient();
     _ioClient = IOClient(_httpClient!);
     _client = _ioClient;
-    _responseText += "\nRequest cancelled.";
+    _responseBuffer.write("\nRequest cancelled.");
+    _responseText = _responseBuffer.toString();
     setLoading(false);
     notifyListeners();
   }
@@ -187,6 +205,18 @@ class AppData extends ChangeNotifier {
     return 0.0;
   }
 
+  // Safe color extraction that handles null values
+  Color extractColor(dynamic parameters) {
+    final red = parseDouble(parameters['colorRed'] ?? parameters['r'] ?? 0).toInt().clamp(0, 255);
+    final green = parseDouble(parameters['colorGreen'] ?? parameters['g'] ?? 0).toInt().clamp(0, 255);
+    final blue = parseDouble(parameters['colorBlue'] ?? parameters['b'] ?? 0).toInt().clamp(0, 255);
+    
+    if (red != 0 || green != 0 || blue != 0) {
+      return Color.fromARGB(255, red, green, blue);
+    }
+    return Colors.black; // default
+  }
+
   void _processFunctionCall(Map<String, dynamic> functionCall) {
     final fixedJson = fixJsonInStrings(functionCall);
     final parameters = fixedJson['arguments'];
@@ -195,7 +225,7 @@ class AppData extends ChangeNotifier {
     String infoText = "$name: $parameters";
 
     print(infoText);
-    _responseText = "$_responseText\n$infoText";
+    _responseBuffer.write("\n$infoText");
 
     switch (name) {
       case 'draw_circle':
@@ -274,33 +304,16 @@ class AppData extends ChangeNotifier {
   //================//
 
   void _processDrawCircle(dynamic parameters) {
-    final dx = parseDouble(parameters['x']);
-    final dy = parseDouble(parameters['y']);
+    final dx = parseDouble(parameters['x'] ?? 0);
+    final dy = parseDouble(parameters['y'] ?? 0);
     
-    double radius = 10.0;
-    if (parameters['radius'] != null) {
-      radius = parseDouble(parameters['radius']);
-    }
-
-    double strokeWidth = 2.0;
-    if (parameters['strokeWidth'] != null) {
-      strokeWidth = parseDouble(parameters['strokeWidth']);
-    }
-
-    Color color = Colors.black; 
-    if (parameters['colorRed'] != null ||
-        parameters['colorGreen'] != null ||
-        parameters['colorBlue'] != null) {
-      final colorRed = parseDouble(parameters['colorRed']).toInt();
-      final colorGreen = parseDouble(parameters['colorGreen']).toInt();
-      final colorBlue = parseDouble(parameters['colorBlue']).toInt();
-      color = Color.fromARGB(255, colorRed, colorGreen, colorBlue);
-    }
-
+    double radius = parseDouble(parameters['radius'] ?? 10.0);
+    double strokeWidth = parseDouble(parameters['strokeWidth'] ?? 2.0);
+    Color color = extractColor(parameters);
+    
     PaintingStyle style = PaintingStyle.stroke;
-    if (parameters['fill'] != null) {
-      final fill = parameters['fill'];
-      style = fill ? PaintingStyle.fill : PaintingStyle.stroke;
+    if (parameters['fill'] == true) {
+      style = PaintingStyle.fill;
     }
 
     addDrawable(Circle(
@@ -310,27 +323,15 @@ class AppData extends ChangeNotifier {
   }
 
   void _processDrawLine(dynamic parameters) {
-    final startX = parseDouble(parameters['startX']);
-    final startY = parseDouble(parameters['startY']);
-    final endX = parseDouble(parameters['endX']);
-    final endY = parseDouble(parameters['endY']);
+    final startX = parseDouble(parameters['startX'] ?? 0);
+    final startY = parseDouble(parameters['startY'] ?? 0);
+    final endX = parseDouble(parameters['endX'] ?? 100);
+    final endY = parseDouble(parameters['endY'] ?? 100);
     final start = Offset(startX, startY);
     final end = Offset(endX, endY);
 
-    Color color = Colors.black;
-    if (parameters['colorRed'] != null ||
-        parameters['colorGreen'] != null ||
-        parameters['colorBlue'] != null) {
-      final colorRed = parseDouble(parameters['colorRed']).toInt();
-      final colorGreen = parseDouble(parameters['colorGreen']).toInt();
-      final colorBlue = parseDouble(parameters['colorBlue']).toInt();
-      color = Color.fromARGB(255, colorRed, colorGreen, colorBlue);
-    }
-
-    double strokeWidth = 2.0;
-    if (parameters['strokeWidth'] != null) {
-      strokeWidth = parseDouble(parameters['strokeWidth']);
-    }
+    Color color = extractColor(parameters);
+    double strokeWidth = parseDouble(parameters['strokeWidth'] ?? 2.0);
 
     addDrawable(Line(
       start: start, end: end, 
@@ -339,32 +340,19 @@ class AppData extends ChangeNotifier {
   }
 
   void _processDrawRectangle(dynamic parameters) {
-    final topLeftX = parseDouble(parameters['topLeftX']);
-    final topLeftY = parseDouble(parameters['topLeftY']);
-    final bottomRightX = parseDouble(parameters['bottomRightX']);
-    final bottomRightY = parseDouble(parameters['bottomRightY']);
+    final topLeftX = parseDouble(parameters['topLeftX'] ?? 0);
+    final topLeftY = parseDouble(parameters['topLeftY'] ?? 0);
+    final bottomRightX = parseDouble(parameters['bottomRightX'] ?? 100);
+    final bottomRightY = parseDouble(parameters['bottomRightY'] ?? 100);
     final topLeft = Offset(topLeftX, topLeftY);
     final bottomRight = Offset(bottomRightX, bottomRightY);
 
-    double strokeWidth = 2.0;
-    if (parameters['strokeWidth'] != null) {
-      strokeWidth = parseDouble(parameters['strokeWidth']);
-    }
-
-    Color color = Colors.black; 
-    if (parameters['colorRed'] != null ||
-        parameters['colorGreen'] != null ||
-        parameters['colorBlue'] != null) {
-      final colorRed = parseDouble(parameters['colorRed']).toInt();
-      final colorGreen = parseDouble(parameters['colorGreen']).toInt();
-      final colorBlue = parseDouble(parameters['colorBlue']).toInt();
-      color = Color.fromARGB(255, colorRed, colorGreen, colorBlue);
-    }
-
+    double strokeWidth = parseDouble(parameters['strokeWidth'] ?? 2.0);
+    Color color = extractColor(parameters);
+    
     PaintingStyle style = PaintingStyle.stroke;
-    if (parameters['fill'] != null) {
-      final fill = parameters['fill'];
-      style = fill ? PaintingStyle.fill : PaintingStyle.stroke;
+    if (parameters['fill'] == true) {
+      style = PaintingStyle.fill;
     }
 
     addDrawable(Rectangle(
@@ -374,39 +362,19 @@ class AppData extends ChangeNotifier {
   }
 
   void _processDrawText(dynamic parameters) {
-    final text = parameters['text'];
-    final positionX = parseDouble(parameters['positionX']);
-    final positionY = parseDouble(parameters['positionY']);
+    final text = parameters['text'] ?? 'Text';
+    // Accept both 'x'/'y' and 'positionX'/'positionY' for flexibility
+    final positionX = parseDouble(parameters['positionX'] ?? parameters['x'] ?? 0);
+    final positionY = parseDouble(parameters['positionY'] ?? parameters['y'] ?? 0);
     final position = Offset(positionX, positionY);
 
-    Color color = Colors.black; 
-    if (parameters['colorRed'] != null ||
-        parameters['colorGreen'] != null ||
-        parameters['colorBlue'] != null) {
-      final colorRed = parseDouble(parameters['colorRed']).toInt();
-      final colorGreen = parseDouble(parameters['colorGreen']).toInt();
-      final colorBlue = parseDouble(parameters['colorBlue']).toInt();
-      color = Color.fromARGB(255, colorRed, colorGreen, colorBlue);
-    }
-
-    double fontSize = 14.0;
-    if(parameters['fontSize'] != null) {
-      fontSize = parseDouble(parameters['fontSize']);
-    }
-    FontWeight fontWeight = FontWeight.normal;
-    if (parameters['bold'] != null) {
-      final bold = parameters['bold'];
-      if (bold) fontWeight = FontWeight.bold;
-    }
-    FontStyle fontStyle = FontStyle.normal;
-    if (parameters['italic'] != null) {
-      final italic = parameters['italic'];
-      if (italic) fontStyle = FontStyle.italic;
-    }
-    String? fontFamily;
-    if (parameters['fontFamily'] != null) {
-      fontFamily = parameters['fontFamily'].toString();
-    }
+    Color color = extractColor(parameters);
+    double fontSize = parseDouble(parameters['fontSize'] ?? 14.0);
+    
+    FontWeight fontWeight = (parameters['bold'] == true) ? FontWeight.bold : FontWeight.normal;
+    FontStyle fontStyle = (parameters['italic'] == true) ? FontStyle.italic : FontStyle.normal;
+    String? fontFamily = (parameters['fontFamily'] != null) ? parameters['fontFamily'].toString() : null;
+    
     addDrawable(TextElement( 
       text: text, position: position, color: color, fontSize: fontSize, 
       fontWeight: fontWeight, fontStyle: fontStyle, fontFamily: fontFamily
@@ -442,16 +410,11 @@ class AppData extends ChangeNotifier {
       }
     }
     
-    // Select by color
+    // Select by color - only if at least one color component is provided
     if (arguments['colorRed'] != null || 
         arguments['colorGreen'] != null ||
         arguments['colorBlue'] != null) {
-      final targetColor = Color.fromARGB(
-        255,
-        parseDouble(arguments['colorRed']).toInt(),
-        parseDouble(arguments['colorGreen']).toInt(),
-        parseDouble(arguments['colorBlue']).toInt(),
-      );
+      final targetColor = extractColor(arguments);
       toSelect.addAll(
         drawables.where((d) => d.color.toARGB32() == targetColor.toARGB32()).map((d) => d.id)
       );
@@ -475,7 +438,8 @@ class AppData extends ChangeNotifier {
       selectionManager.select(id, multiSelect: true);
     }
     
-    _responseText += "\nSelected ${toSelect.length} drawable(s).";
+    _responseBuffer.write("\nSelected ${toSelect.length} drawable(s).");
+    _responseText = _responseBuffer.toString();
     notifyListeners();
   }
   
@@ -483,7 +447,8 @@ class AppData extends ChangeNotifier {
     final selected = selectionManager.getSelectedDrawables(drawables);
     drawables.removeWhere((d) => selectionManager.isSelected(d.id));
     selectionManager.clearSelection();
-    _responseText += "\nDeleted ${selected.length} drawable(s).";
+    _responseBuffer.write("\nDeleted ${selected.length} drawable(s).");
+    _responseText = _responseBuffer.toString();
     notifyListeners();
   }
   
@@ -503,13 +468,9 @@ class AppData extends ChangeNotifier {
       }
     }
     
-    if (arguments['colorRed'] != null && arguments['colorGreen'] != null && arguments['colorBlue'] != null) {
-      final targetColor = Color.fromARGB(
-        255,
-        parseDouble(arguments['colorRed']).toInt(),
-        parseDouble(arguments['colorGreen']).toInt(),
-        parseDouble(arguments['colorBlue']).toInt(),
-      );
+    // Delete by color - only if at least one color component is provided
+    if (arguments['colorRed'] != null || arguments['colorGreen'] != null || arguments['colorBlue'] != null) {
+      final targetColor = extractColor(arguments);
       toDelete.addAll(
         drawables.where((d) => d.color.toARGB32() == targetColor.toARGB32()).map((d) => d.id)
       );
@@ -517,7 +478,8 @@ class AppData extends ChangeNotifier {
     
     drawables.removeWhere((d) => toDelete.contains(d.id));
     selectionManager.clearSelection();
-    _responseText += "\nDeleted ${toDelete.length} drawable(s).";
+    _responseBuffer.write("\nDeleted ${toDelete.length} drawable(s).");
+    _responseText = _responseBuffer.toString();
     notifyListeners();
   }
   
@@ -545,24 +507,19 @@ class AppData extends ChangeNotifier {
 
   void _processModifySelected(Map<String, dynamic> arguments) {
     if (_canvasSize == null) {
-      _responseText += "\nCanvas size not available for relative positioning.";
+      _responseBuffer.write("\nCanvas size not available for relative positioning.");
     }
     
     final selected = selectionManager.getSelectedDrawables(drawables);
     if (selected.isEmpty) {
-      _responseText += "\nNo drawables selected to modify.";
+      _responseBuffer.write("\nNo drawables selected to modify.");
       return;
     }
     
     for (var drawable in selected) {
-      // Color
-      if (arguments['colorRed'] != null && arguments['colorGreen'] != null && arguments['colorBlue'] != null) {
-        drawable.color = Color.fromARGB(
-          255,
-          parseDouble(arguments['colorRed']).toInt(),
-          parseDouble(arguments['colorGreen']).toInt(),
-          parseDouble(arguments['colorBlue']).toInt(),
-        );
+      // Color - handle null gracefully
+      if (arguments['colorRed'] != null || arguments['colorGreen'] != null || arguments['colorBlue'] != null) {
+        drawable.color = extractColor(arguments);
       }
       
       // Moviment
@@ -603,8 +560,8 @@ class AppData extends ChangeNotifier {
         if (arguments['radius'] != null) {
           drawable.radius = max(0.0, parseDouble(arguments['radius']));
         }
-        if (arguments['fill'] != null) {
-          drawable.style = arguments['fill'] ? PaintingStyle.fill : PaintingStyle.stroke;
+        if (arguments['fill'] == true) {
+          drawable.style = PaintingStyle.fill;
         }
         if (arguments['strokeWidth'] != null) {
           drawable.strokeWidth = parseDouble(arguments['strokeWidth']);
@@ -612,8 +569,8 @@ class AppData extends ChangeNotifier {
       }
       
       if (drawable is Rectangle) {
-        if (arguments['fill'] != null) {
-          drawable.style = arguments['fill'] ? PaintingStyle.fill : PaintingStyle.stroke;
+        if (arguments['fill'] == true) {
+          drawable.style = PaintingStyle.fill;
         }
         if (arguments['strokeWidth'] != null) {
           drawable.strokeWidth = parseDouble(arguments['strokeWidth']);
@@ -624,11 +581,11 @@ class AppData extends ChangeNotifier {
         if (arguments['fontSize'] != null) {
           drawable.fontSize = parseDouble(arguments['fontSize']);
         }
-        if (arguments['bold'] != null) {
-          drawable.fontWeight = arguments['bold'] ? FontWeight.bold : FontWeight.normal;
+        if (arguments['bold'] == true) {
+          drawable.fontWeight = FontWeight.bold;
         }
-        if (arguments['italic'] != null) {
-          drawable.fontStyle = arguments['italic'] ? FontStyle.italic : FontStyle.normal;
+        if (arguments['italic'] == true) {
+          drawable.fontStyle = FontStyle.italic;
         }
         if (arguments['text'] != null) {
           drawable.text = arguments['text'].toString();
@@ -636,14 +593,15 @@ class AppData extends ChangeNotifier {
       }
     }
     
-    _responseText += "\nModified ${selected.length} drawable(s).";
+    _responseBuffer.write("\nModified ${selected.length} drawable(s).");
+    _responseText = _responseBuffer.toString();
     notifyListeners();
   }
 
 
   void _processGetCanvasInfo() {
     if (_canvasSize == null) {
-      _responseText += "\nCanvas size not available.";
+      _responseBuffer.write("\nCanvas size not available.");
       return;
     }
     
@@ -660,7 +618,8 @@ class AppData extends ChangeNotifier {
       }
     };
     
-    _responseText += "\nCanvas Info: ${jsonEncode(info)}";
+    _responseBuffer.write("\nCanvas Info: ${jsonEncode(info)}");
+    _responseText = _responseBuffer.toString();
     notifyListeners();
   }
 
